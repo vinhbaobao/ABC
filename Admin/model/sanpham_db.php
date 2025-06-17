@@ -38,12 +38,12 @@ function get_sanpham($id_sanpham) {
     return $product;
 }
 
-function get_sanpham_theo_hangsx($hangsx) {
-    global $db;
-    $query = "SELECT * FROM sanpham WHERE HangSX = '$hangsx'";
-    $product = $db->query($query);
-    return $product;
-}
+// function get_sanpham_theo_hangsx($hangsx) {
+//     global $db;
+//     $query = "SELECT * FROM sanpham WHERE HangSX = '$hangsx'";
+//     $product = $db->query($query);
+//     return $product;
+// }
 
 function delete_sanpham($id_sanpham) {
     global $db;

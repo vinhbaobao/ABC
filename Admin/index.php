@@ -6,6 +6,7 @@ require('model/user_db.php');
 require('model/cart_db.php');
 require('model/kho_dp.php');
 
+
 // ===== XỬ LÝ PHIẾU XUẤT NHẬP KHO (POST) =====
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && in_array($_POST['action'], ['add_phieu', 'edit_phieu', 'del_phieu'])) {
     require_once('model/phieu.php');
@@ -16,14 +17,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && in_array
             $ngay = $_POST['ngay'];
             $nhan_vien = trim($_POST['nhan_vien']);
             $loai_phieu = $_POST['loai_phieu'];
-            $id_nhomsp = intval($_POST['id_nhomsp']);
             $id_kho = intval($_POST['id_kho']);
             $ds_sp = isset($_POST['id_sp']) ? $_POST['id_sp'] : [];
             $ds_soluong = isset($_POST['so_luong']) ? $_POST['so_luong'] : [];
             // Kiểm tra dữ liệu
-            if ($ma_phieu && in_array($loai_phieu, ['nhap', 'xuat']) && $id_nhomsp && $id_kho && $ngay && $nhan_vien && is_array($ds_sp) && is_array($ds_soluong) && count($ds_sp) > 0) {
+            if ($ma_phieu && in_array($loai_phieu, ['nhap', 'xuat']) && $id_kho && $ngay && $nhan_vien && is_array($ds_sp) && is_array($ds_soluong) && count($ds_sp) > 0) {
                 require_once('model/phieu.php');
-                add_phieu($ma_phieu, $ngay, $nhan_vien, $loai_phieu, $id_nhomsp, $id_kho, $ds_sp, $ds_soluong);
+                add_phieu($ma_phieu, $ngay, $nhan_vien, $loai_phieu, $id_kho, $ds_sp, $ds_soluong);
                 header("Location: index.php?action=ql_phieuXNKho");
                 exit;
             } else {
@@ -36,13 +36,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && in_array
             $ngay = $_POST['ngay'];
             $nhan_vien = trim($_POST['nhan_vien']);
             $loai_phieu = $_POST['loai_phieu'];
-            $id_nhomsp = intval($_POST['id_nhomsp']);
             $id_kho = intval($_POST['id_kho']);
             $ds_sp = isset($_POST['id_sp']) ? $_POST['id_sp'] : [];
             $ds_soluong = isset($_POST['so_luong']) ? $_POST['so_luong'] : [];
-            if ($ma_phieu && $ngay && $nhan_vien && in_array($loai_phieu, ['nhap', 'xuat']) && $id_nhomsp && $id_kho && is_array($ds_sp) && is_array($ds_soluong) && count($ds_sp) > 0) {
+            if ($ma_phieu && $ngay && $nhan_vien && in_array($loai_phieu, ['nhap', 'xuat']) && $id_kho && is_array($ds_sp) && is_array($ds_soluong) && count($ds_sp) > 0) {
                 require_once('model/phieu.php');
-                sua_phieu($id, $ma_phieu, $ngay, $nhan_vien, $loai_phieu, $id_nhomsp, $id_kho, $ds_sp, $ds_soluong);
+                sua_phieu($id, $ma_phieu, $ngay, $nhan_vien, $loai_phieu, $id_kho, $ds_sp, $ds_soluong);
                 header("Location: index.php?action=ql_phieuXNKho");
                 exit;
             } else {
@@ -80,7 +79,7 @@ if ($action == 'home') {
 
 // ===== QUẢN LÝ SẢN PHẨM =====
 if ($action == 'ql_sp') {
-    $category_id = $_GET['category_id'];
+    $category_id = isset($_GET['category_id']) ? $_GET['category_id'] : '0';
     if ($category_id == '0') {
         $categories = get_nhomsp();
         $categories2 = get_nhomsp();
@@ -88,20 +87,11 @@ if ($action == 'ql_sp') {
         $category_name = 'Tất cả';
         include('ql_sp.php');
     } else {
-        $hangsx = $_GET['hangsx'];
-        if ($hangsx == '0'){
-            $category_name = get_ten_nhomsp($category_id);
-            $categories = get_nhomsp();
-            $categories2 = get_nhomsp();
-            $products = get_sanpham_theo_nhomsp($category_id);
-            include('ql_sp.php');
-        } else {
-            $category_name = $hangsx;
-            $categories = get_nhomsp();
-            $categories2 = get_nhomsp();
-            $products = get_sanpham_theo_hangsx($hangsx);
-            include('ql_sp.php');
-        }
+        $category_name = get_ten_nhomsp($category_id);
+        $categories = get_nhomsp();
+        $categories2 = get_nhomsp();
+        $products = get_sanpham_theo_nhomsp($category_id);
+        include('ql_sp.php');
     }
 // ===== XÓA NHÓM SẢN PHẨM =====
 } else if ($action == 'del_nhomsp') {
@@ -192,20 +182,39 @@ if ($action == 'ql_sp') {
 } else if ($action == 'sua_sp') {
     $product_id = $_POST['product_id'];
     $category_id = $_POST['category_id'];
-    $id_kho = $_POST['id_kho']; // lấy id_kho từ form sửa sản phẩm
+    $id_kho = $_POST['id_kho'];
     $ten_sp = $_POST['ten_sp'];
-    $hinh = $_POST['hinh'];
+    // Xử lý upload hình ảnh khi sửa sản phẩm
+    $hinh = isset($_POST['hinh']) ? $_POST['hinh'] : '';
+    if (isset($_FILES['hinh_file']) && $_FILES['hinh_file']['error'] == 0) {
+        $target_dir = "../images/sanpham/";
+        $file_name = basename($_FILES["hinh_file"]["name"]);
+        $target_file = $target_dir . $file_name;
+        if (move_uploaded_file($_FILES["hinh_file"]["tmp_name"], $target_file)) {
+            $hinh = "/sanpham/" . $file_name;
+        }
+    }
     $hansd = date('Y-m-d', strtotime($_POST['hansd']));
     $chitiet = isset($_POST['chitiet']) ? $_POST['chitiet'] : '';
     $hethan = date('Y-m-d', strtotime($_POST['hethan']));
     $soluong = $_POST['soluong'];
-    // Gọi hàm cập nhật sản phẩm với id_kho thay cho hangsx
     sua_sp($category_id, $ten_sp, $id_kho, $hinh, $hansd, $chitiet, $hethan, $soluong, $product_id);
     header("Location: .?action=edit_sp&product_id=$product_id");
 // ===== LƯU SỬA NHÓM SẢN PHẨM =====
 } else if ($action == 'sua_nhomsp') {
     $ten_nhomsp = $_POST['ten_nhomsp'];
-    $hinh_nhomsp = $_POST['hinh_nhomsp'];
+    // Xử lý upload hình ảnh nhóm sản phẩm khi sửa
+    $hinh_nhomsp = '';
+    if (isset($_FILES['hinh_nhomsp']) && $_FILES['hinh_nhomsp']['error'] == 0) {
+        $target_dir = "../images/nhomsp/";
+        $file_name = basename($_FILES["hinh_nhomsp"]["name"]);
+        $target_file = $target_dir . $file_name;
+        if (move_uploaded_file($_FILES["hinh_nhomsp"]["tmp_name"], $target_file)) {
+            $hinh_nhomsp = $file_name;
+        }
+    } else if (!empty($_POST['hinh_nhomsp_old'])) {
+        $hinh_nhomsp = $_POST['hinh_nhomsp_old'];
+    }
     $category_id = $_POST['category_id'];
     sua_nhomsp($ten_nhomsp, $hinh_nhomsp, $category_id);
     header("Location: .?action=ql_sp&category_id=0");

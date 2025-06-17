@@ -1,4 +1,61 @@
 <?php include 'view/header_admin.php'; ?>
+<style>
+/* ======= Giao diện CSS cho trang quản lý phiếu xuất nhập kho ======= */
+.panel {
+    border-radius: 12px !important;
+    box-shadow: 0 2px 8px rgba(40,62,81,0.07);
+    border: none;
+}
+.panel-heading {
+    border-radius: 12px 12px 0 0 !important;
+    background: #e3eaf1 !important;
+}
+.panel-body {
+    background: #fff;
+    border-radius: 0 0 12px 12px;
+    padding: 18px 18px 12px 18px;
+}
+.table {
+    border-radius: 12px !important;
+    overflow: hidden;
+    background: #fafbfc;
+    margin-bottom: 0;
+}
+.table > thead > tr {
+    background: #e3eaf1;
+}
+.table > tbody > tr:hover {
+    background: #f1f7fa;
+    transition: background 0.2s;
+}
+.table > tbody > tr > td, .table > thead > tr > th {
+    padding: 8px 10px !important;
+    vertical-align: middle !important;
+}
+.form-group label {
+    font-weight: 500;
+}
+.form-control {
+    border-radius: 8px;
+    border: 1px solid #cfd8dc;
+    background: #f8fafb;
+}
+#ds_sanpham .sanpham-row {
+    margin-bottom: 8px;
+}
+.btn-primary, .btn-warning, .btn-danger, .btn-default {
+    border-radius: 8px !important;
+}
+.tittle h3 {
+    color: #1a2a3a;
+}
+@media (max-width: 991px) {
+    .panel-body {
+        padding: 12px 6px 8px 6px;
+    }
+}
+</style>
+
 		<div class="right-col col-lg-10 col-md-9 col-sm-9 col-xs-12" style="background-color:#F7F7F7;color:#73879C;">
 			<!-- Tiêu đề trang -->
 			<div class="tittle">
@@ -7,9 +64,10 @@
 			<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 				<div class="mini-content">
 					<div class="main-mini-content">
-						<form class="form-horizontal" method="post">
+						<form class="form-horizontal" method="post" enctype="multipart/form-data">
 							<input type="hidden" name="action" value="sua_sp">
 							<input type="hidden" name="product_id" value="<?php echo $products['IdSP']; ?>">
+							<input type="hidden" name="hinh" value="<?php echo $products['Hinh']; ?>">
 							<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
 								<!-- Hiển thị hình ảnh sản phẩm -->
 								<div style="width:100%;float:left;text-align:center;margin-bottom:20px;">
@@ -17,10 +75,10 @@
 								</div>
 								<!-- Nhập URL hình ảnh -->
 								<div class="form-group">
-									<label for="hinh" class="col-sm-3 control-label">URL</label>
-								    <div class="col-sm-9">
-								      <input type="text" class="form-control" id="hinh" name="hinh" value="<?php echo $products['Hinh']; ?>">
-								    </div>
+									<label for="hinh_sp" class="col-sm-3 control-label">Chọn hình ảnh SP</label>
+									<div class="col-sm-9">
+									  <input type="file" class="form-control" id="hinh_sp" name="hinh_file">
+									</div>
 								</div>
 								<!-- Nhập tên sản phẩm -->
 								<div class="form-group">

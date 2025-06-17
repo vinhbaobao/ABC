@@ -1,5 +1,63 @@
 <?php include 'view/header_admin.php'; ?>
+
 <meta charset="UTF-8">
+<style>
+/* ======= Giao diện CSS cho trang quản lý phiếu xuất nhập kho ======= */
+.panel {
+    border-radius: 12px !important;
+    box-shadow: 0 2px 8px rgba(40,62,81,0.07);
+    border: none;
+}
+.panel-heading {
+    border-radius: 12px 12px 0 0 !important;
+    background: #e3eaf1 !important;
+}
+.panel-body {
+    background: #fff;
+    border-radius: 0 0 12px 12px;
+    padding: 18px 18px 12px 18px;
+}
+.table {
+    border-radius: 12px !important;
+    overflow: hidden;
+    background: #fafbfc;
+    margin-bottom: 0;
+}
+.table > thead > tr {
+    background: #e3eaf1;
+}
+.table > tbody > tr:hover {
+    background: #f1f7fa;
+    transition: background 0.2s;
+}
+.table > tbody > tr > td, .table > thead > tr > th {
+    padding: 8px 10px !important;
+    vertical-align: middle !important;
+}
+.form-group label {
+    font-weight: 500;
+}
+.form-control {
+    border-radius: 8px;
+    border: 1px solid #cfd8dc;
+    background: #f8fafb;
+}
+#ds_sanpham .sanpham-row {
+    margin-bottom: 8px;
+}
+.btn-primary, .btn-warning, .btn-danger, .btn-default {
+    border-radius: 8px !important;
+}
+.tittle h3 {
+    color: #1a2a3a;
+}
+@media (max-width: 991px) {
+    .panel-body {
+        padding: 12px 6px 8px 6px;
+    }
+}
+</style>
+
 <div class="right-col col-lg-10 col-md-9 col-sm-9 col-xs-12" style="background:#f4f6f9;color:#283e51;min-height:100vh;padding:16px 8px 8px 8px;">
     <div class="tittle" style="margin-bottom:16px;">
         <h3 style="font-weight:600;">Quản lý kho</h3>

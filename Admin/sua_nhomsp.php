@@ -1,4 +1,61 @@
 <?php include 'view/header_admin.php'; ?>
+<style>
+/* ======= Giao diện CSS cho trang quản lý phiếu xuất nhập kho ======= */
+.panel {
+    border-radius: 12px !important;
+    box-shadow: 0 2px 8px rgba(40,62,81,0.07);
+    border: none;
+}
+.panel-heading {
+    border-radius: 12px 12px 0 0 !important;
+    background: #e3eaf1 !important;
+}
+.panel-body {
+    background: #fff;
+    border-radius: 0 0 12px 12px;
+    padding: 18px 18px 12px 18px;
+}
+.table {
+    border-radius: 12px !important;
+    overflow: hidden;
+    background: #fafbfc;
+    margin-bottom: 0;
+}
+.table > thead > tr {
+    background: #e3eaf1;
+}
+.table > tbody > tr:hover {
+    background: #f1f7fa;
+    transition: background 0.2s;
+}
+.table > tbody > tr > td, .table > thead > tr > th {
+    padding: 8px 10px !important;
+    vertical-align: middle !important;
+}
+.form-group label {
+    font-weight: 500;
+}
+.form-control {
+    border-radius: 8px;
+    border: 1px solid #cfd8dc;
+    background: #f8fafb;
+}
+#ds_sanpham .sanpham-row {
+    margin-bottom: 8px;
+}
+.btn-primary, .btn-warning, .btn-danger, .btn-default {
+    border-radius: 8px !important;
+}
+.tittle h3 {
+    color: #1a2a3a;
+}
+@media (max-width: 991px) {
+    .panel-body {
+        padding: 12px 6px 8px 6px;
+    }
+}
+</style>
+
 		<div class="right-col col-lg-10 col-md-9 col-sm-9 col-xs-12" style="background-color:#F7F7F7;color:#73879C;">
 			<!-- Tiêu đề trang -->
 			<div class="tittle">
@@ -87,57 +144,5 @@
 					</div>
 				</div>
 			</div>
-			<!-- Bảng danh sách sản phẩm thuộc nhóm -->
-			<div class="content col-lg-12 col-md-12 col-sm-12 col-xs-12">
-				<div class="mini-content">
-					<div class="title">
-						<h2>Danh sách sản phẩm >> <?php echo $category_name; ?></h2>
-					</div>
-					<div class="main-mini-content">
-						<table class="table table-striped">
-							<thead>
-								<tr>
-									<th style="width:50px;">&nbsp</th>
-									<th style="width:300px;">Tên sản phẩm</th>
-									<th style="width:100px;">Hình Ảnh</th>
-									<th>Số lượng</th>
-									<th>Hạn sử dụng</th>
-									<th>Hết hạn</th>
-									<th>Thay đổi</th>
-								</tr>
-							</thead>
-							<tbody>
-							<?php foreach ($products as $product) : ?>
-							<tr>
-								<td>
-									<!-- Nút xóa sản phẩm -->
-									<form method="post">
-										<input type="hidden" name="action" value="del_sp">
-										<label for="<?php echo $product['IdSP']; ?>" class="btn"><i class="fa fa-window-close"></i></label>
-										<input id="<?php echo $product['IdSP']; ?>" type="submit" name="id_sanpham" value="<?php echo $product['IdSP']; ?>" class="hidden" />
-									</form>
-								</td>
-								<td>
-									<!-- Tên sản phẩm -->
-									<?php echo $product['TenSP']; ?>
-								</td>
-								<td>
-									<!-- Hình ảnh sản phẩm -->
-									<img style="width:100px;" src="../images<?php echo $product['Hinh']; ?>">
-								</td>
-								<td><?php echo (int)$product['SoLuong']; ?></td>
-								<td><?php echo date('d/m/Y', strtotime($product['HanSD'])); ?></td>
-								<td><?php echo date('d/m/Y', strtotime($product['HetHan'])); ?></td>
-								<td>
-									<!-- Nút sửa sản phẩm -->
-									<a href="?action=edit_sp&product_id=<?php echo $product['IdSP']; ?>"><i class="fa fa-pencil-square-o"></i></a>
-								</td>
-							</tr>
-							<?php endforeach; ?>
-							</tbody>
-						</table>
-					</div>
-				</div>
-			</div>
 		</div>
-	<?php include 'view/footer_admin.php'; ?>
+	</div>

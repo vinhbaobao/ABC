@@ -4,11 +4,20 @@
 // Không có ảnh hưởng trực tiếp đến form trong ql_phieuXNKho.php
 
 // Lấy tất cả phiếu xuất nhập kho
-function get_all_phieu() {
+function get_all_phieu($loai = null) {
     global $db;
-    $sql = "SELECT * FROM phieu ORDER BY ngay DESC";
-    $result = $db->query($sql);
-    return $result ? $result->fetchAll(PDO::FETCH_ASSOC) : [];
+    $sql = "SELECT p.*, 
+                   (SELECT SUM(so_luong) FROM phieu_chitiet WHERE id_phieu = p.id) as so_luong
+            FROM phieu p";
+    if ($loai) {
+        $sql .= " WHERE loai_phieu = ?";
+        $stmt = $db->prepare($sql . " ORDER BY ngay DESC");
+        $stmt->execute([$loai]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } else {
+        $stmt = $db->query($sql . " ORDER BY ngay DESC");
+        return $stmt ? $stmt->fetchAll(PDO::FETCH_ASSOC) : [];
+    }
 }
 
 // Lấy chi tiết sản phẩm của một phiếu (nhiều sản phẩm)
@@ -20,13 +29,13 @@ function get_chitiet_phieu($id_phieu) {
 }
 
 // Thêm phiếu mới và cập nhật số lượng sản phẩm (nhiều sản phẩm)
-function add_phieu($ma_phieu, $ngay, $nhan_vien, $loai_phieu, $id_nhomsp, $id_kho, $ds_sp, $ds_soluong) {
+function add_phieu($ma_phieu, $ngay, $nhan_vien, $loai_phieu, $id_kho, $ds_sp, $ds_soluong) {
     global $db;
     $db->beginTransaction();
     try {
-        // Thêm phiếu
-        $stmt = $db->prepare("INSERT INTO phieu (ma_phieu, ngay, nhan_vien, loai_phieu, id_nhomsp, id_kho) VALUES (?, ?, ?, ?, ?, ?)");
-        $stmt->execute([$ma_phieu, $ngay, $nhan_vien, $loai_phieu, $id_nhomsp, $id_kho]);
+        // Thêm phiếu (KHÔNG có id_nhomsp trong SQL)
+        $stmt = $db->prepare("INSERT INTO phieu (ma_phieu, ngay, nhan_vien, loai_phieu, id_kho) VALUES (?, ?, ?, ?, ?)");
+        $stmt->execute([$ma_phieu, $ngay, $nhan_vien, $loai_phieu, $id_kho]);
         $id_phieu = $db->lastInsertId();
 
         // Thêm chi tiết phiếu và cập nhật số lượng sản phẩm
@@ -59,7 +68,7 @@ function add_phieu($ma_phieu, $ngay, $nhan_vien, $loai_phieu, $id_nhomsp, $id_kh
 }
 
 // Sửa phiếu (cập nhật lại chi tiết và số lượng sản phẩm)
-function sua_phieu($id, $ma_phieu, $ngay, $nhan_vien, $loai_phieu, $id_nhomsp, $id_kho, $ds_sp, $ds_soluong) {
+function sua_phieu($id, $ma_phieu, $ngay, $nhan_vien, $loai_phieu, $id_kho, $ds_sp, $ds_soluong) {
     global $db;
     $db->beginTransaction();
     try {
@@ -74,9 +83,9 @@ function sua_phieu($id, $ma_phieu, $ngay, $nhan_vien, $loai_phieu, $id_nhomsp, $
         }
         // Xóa chi tiết cũ
         $db->prepare("DELETE FROM phieu_chitiet WHERE id_phieu = ?")->execute([$id]);
-        // Cập nhật phiếu
-        $stmt = $db->prepare("UPDATE phieu SET ma_phieu=?, ngay=?, nhan_vien=?, loai_phieu=?, id_nhomsp=?, id_kho=? WHERE id=?");
-        $stmt->execute([$ma_phieu, $ngay, $nhan_vien, $loai_phieu, $id_nhomsp, $id_kho, $id]);
+        // Cập nhật phiếu (KHÔNG có id_nhomsp trong SQL)
+        $stmt = $db->prepare("UPDATE phieu SET ma_phieu=?, ngay=?, nhan_vien=?, loai_phieu=?, id_kho=? WHERE id=?");
+        $stmt->execute([$ma_phieu, $ngay, $nhan_vien, $loai_phieu, $id_kho, $id]);
         // Thêm lại chi tiết mới và cập nhật số lượng
         foreach ($ds_sp as $i => $id_sp) {
             $so_luong = (int)$ds_soluong[$i];
