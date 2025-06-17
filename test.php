@@ -2,22 +2,20 @@
 include 'view/header.php';
  // Include header
 
-// Include your database connection or initialization file here
-
-// Function to get the most recent cart data from the database
+// Function để lấy dữ liệu đơn hàng gần nhất từ database
 function get_recent_cart_data() {
-    // Modify this according to your database connection method
+    // Kết nối database (sử dụng PDO)
     $db = new PDO('mysql:host=localhost;dbname=danhom5', 'root', '');
-    $query = 'SELECT * FROM cart ORDER BY ThoiGian DESC LIMIT 1'; // Fetch the most recent entry
+    $query = 'SELECT * FROM cart ORDER BY ThoiGian DESC LIMIT 1'; // Lấy đơn hàng mới nhất
     $stmt = $db->query($query);
-    return $stmt->fetch(PDO::FETCH_ASSOC); // Use fetch instead of fetchAll to get only one row
+    return $stmt->fetch(PDO::FETCH_ASSOC); // Lấy một dòng dữ liệu
 }
 
-// Get the most recent cart data
+// Lấy dữ liệu đơn hàng gần nhất
 $recent_cart_data = get_recent_cart_data();
 ?>
 
-<!-- Display the most recent cart data -->
+<!-- Hiển thị thông tin đơn hàng gần nhất -->
 <?php if ($recent_cart_data): ?>
     <h2 style="margin-bottom: 20px;">Recent Purchase Details</h2>
     <table style="border-collapse: collapse; width: 100%;">

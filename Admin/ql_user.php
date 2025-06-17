@@ -57,10 +57,12 @@
 </style>
 
 <div class="right-col col-lg-10 col-md-9 col-sm-9 col-xs-12" style="background:#f4f6f9;color:#283e51;min-height:100vh;padding:16px 8px 8px 8px;">
+	<!-- Tiêu đề trang -->
 	<div class="tittle" style="margin-bottom:16px;">
 		<h3 style="font-weight:600;">Quản lý user</h3>
 	</div>
 	<div class="row">
+		<!-- Bảng danh sách nhân viên -->
 		<div class="col-lg-6 col-md-6 col-sm-12" style="margin-bottom:16px;">
 			<div class="panel panel-default">
 				<div class="panel-heading">
@@ -80,6 +82,7 @@
 						<?php foreach ($users as $user) : ?>
 							<tr>
 								<td>
+									<!-- Nút xóa user -->
 									<form method="post" style="margin:0;">
 										<input type="hidden" name="action" value="del_user">
 										<button type="submit" class="btn btn-link" style="padding:0;"><i class="fa fa-window-close"></i></button>
@@ -90,6 +93,7 @@
 								<td><?php echo htmlspecialchars($user['Email']); ?></td>
 								<td>
 									<?php
+										// Hiển thị cấp độ user
 										if ($user['Loai'] == 1){
 											echo 'Nhân viên';
 										} else {
@@ -104,6 +108,7 @@
 				</div>
 			</div>
 		</div>
+		<!-- Form thêm quản trị viên mới -->
 		<div class="col-lg-6 col-md-6 col-sm-12" style="margin-bottom:16px;">
 			<div class="panel panel-default">
 				<div class="panel-heading">

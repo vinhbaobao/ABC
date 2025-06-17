@@ -1,7 +1,8 @@
 <?php include 'view/header_admin.php'; ?>
+<!-- ======= PHẦN: Import và cấu hình meta ======= -->
 <meta charset="UTF-8">
 <style>
-/* ======= Giao diện CSS cho trang quản lý phiếu xuất nhập kho ======= */
+/* ======= PHẦN: Style giao diện quản lý phiếu xuất nhập kho ======= */
 .panel {
     border-radius: 12px !important;
     box-shadow: 0 2px 8px rgba(40,62,81,0.07);
@@ -57,13 +58,14 @@
 }
 </style>
 
-<!-- ======= Layout chính ======= -->
+<!-- ======= PHẦN: Layout chính, tiêu đề trang ======= -->
 <div class="right-col col-lg-10 col-md-9 col-sm-9 col-xs-12" style="background:#f4f6f9;color:#283e51;min-height:100vh;padding:16px 8px 8px 8px;">
-    <!-- ======= Tiêu đề trang ======= -->
+    <!-- ======= PHẦN: Hiển thị tiêu đề và thông báo lỗi/thành công ======= -->
+    <!-- Hiển thị tiêu đề quản lý phiếu xuất nhập kho -->
     <div class="tittle" style="margin-bottom:16px;">
         <h3 style="font-weight:600;">Quản lý Phiếu Xuất Nhập Kho</h3>
     </div>
-    <!-- ======= Hiển thị thông báo lỗi/thành công ======= -->
+    <!-- Hiển thị thông báo lỗi hoặc thành công khi thao tác phiếu -->
     <?php if (!empty($error_message)): ?>
         <div class="alert alert-danger"><?php echo $error_message; ?></div>
     <?php endif; ?>
@@ -71,24 +73,27 @@
         <div class="alert alert-success"><?php echo $success_message; ?></div>
     <?php endif; ?>
 
-    <!-- Đặt form trong row và căn giữa bằng offset -->
+    <!-- ======= PHẦN: Form Thêm/Sửa Phiếu Xuất Nhập Kho ======= -->
     <div class="row" style="margin-bottom:16px;">
         <div class="col-lg-8 col-md-10 col-sm-12" style="float:none; margin:0 auto; clear:both;">
             <div class="panel panel-default" style="border:1px solid #e3eaf1;">
                 <div class="panel-heading">
+                    <!-- Tiêu đề form: Thêm hoặc Sửa phiếu -->
                     <h4 style="font-weight:600;margin:0;">
                         <?php echo isset($edit_phieu) && $edit_phieu ? 'Sửa Phiếu Xuất/Nhập Kho' : 'Thêm Phiếu Xuất/Nhập Kho'; ?>
                     </h4>
                 </div>
                 <div class="panel-body">
+                    <!-- Form nhập thông tin phiếu -->
                     <form class="form-group" method="post" autocomplete="off" style="margin-bottom:0;">
                         <input type="hidden" name="action" value="<?php echo isset($edit_phieu) && $edit_phieu ? 'edit_phieu' : 'add_phieu'; ?>">
                         <?php if (isset($edit_phieu) && $edit_phieu): ?>
                             <input type="hidden" name="id" value="<?php echo $edit_phieu['id']; ?>">
                         <?php endif; ?>
                         <div class="row">
-                            <!-- Cột trái: Sản phẩm & số lượng -->
+                            <!-- ======= Cột trái: Sản phẩm & số lượng ======= -->
                             <div class="col-sm-6">
+                                <!-- Chọn loại phiếu (nhập/xuất) -->
                                 <div class="form-group">
                                     <label for="loai_phieu">Loại phiếu</label>
                                     <select class="form-control" name="loai_phieu" id="loai_phieu" required>
@@ -97,6 +102,7 @@
                                         <option value="xuat" <?php if(isset($edit_phieu) && $edit_phieu['loai_phieu']=='xuat') echo 'selected'; ?>>Phiếu Xuất Kho</option>
                                     </select>
                                 </div>
+                                <!-- Chọn sản phẩm và số lượng -->
                                 <div class="form-group">
                                     <label>Sản phẩm & Số lượng</label>
                                     <div id="ds_sanpham">
@@ -117,8 +123,9 @@
                                     <button type="button" id="add-sp-row" class="btn btn-default btn-xs" style="margin-top:5px;">Thêm sản phẩm</button>
                                 </div>
                             </div>
-                            <!-- Cột phải: Thông tin phiếu -->
+                            <!-- ======= Cột phải: Thông tin phiếu ======= -->
                             <div class="col-sm-6">
+                                <!-- Chọn kho -->
                                 <div class="form-group">
                                     <label for="id_kho">Kho</label>
                                     <select class="form-control" name="id_kho" id="id_kho" required>
@@ -130,6 +137,7 @@
                                         <?php endforeach; ?>
                                     </select>
                                 </div>
+                                <!-- Nhập mã phiếu -->
                                 <div class="form-group">
                                     <label for="ma_phieu">Mã phiếu</label>
                                     <?php
@@ -152,6 +160,7 @@
                                                 : (isset($_POST['ma_phieu']) ? htmlspecialchars($_POST['ma_phieu']) : $ma_phieu_random);
                                         ?>">
                                 </div>
+                                <!-- Chọn ngày -->
                                 <div class="form-group">
                                     <label for="ngay">Ngày</label>
                                     <?php
@@ -166,6 +175,7 @@
                                                 : (isset($_POST['ngay']) ? htmlspecialchars($_POST['ngay']) : $today_vn);
                                         ?>">
                                 </div>
+                                <!-- Chọn nhân viên thực hiện phiếu -->
                                 <div class="form-group">
                                     <label for="nhan_vien">Nhân viên</label>
                                     <?php
@@ -198,6 +208,7 @@
                                 </div>
                             </div>
                         </div>
+                        <!-- Nút lưu/thêm phiếu -->
                         <div class="form-group" style="text-align:right;">
                             <button type="submit" class="btn btn-primary" style="border-radius:8px;"><?php echo isset($edit_phieu) && $edit_phieu ? 'Lưu thay đổi' : 'Thêm phiếu'; ?></button>
                             <?php if (isset($edit_phieu) && $edit_phieu): ?>
@@ -210,15 +221,16 @@
         </div>
     </div>
 
-    <!-- ======= Khu vực danh sách phiếu nằm riêng phía dưới ======= -->
+    <!-- ======= PHẦN: Danh sách phiếu nhập kho ======= -->
     <div class="row" style="margin-top:24px;">
         <div class="col-lg-12 col-md-12 col-sm-12">
-            <!-- ======= Danh sách Phiếu Nhập Kho ======= -->
+            <!-- ======= PHẦN: Bảng danh sách Phiếu Nhập Kho ======= -->
             <div class="panel panel-default" style="margin-bottom:16px;">
                 <div class="panel-heading">
                     <h4 style="font-weight:600;margin:0;">Danh sách Phiếu Nhập Kho</h4>
                 </div>
                 <div class="panel-body">
+                    <!-- Bảng danh sách phiếu nhập kho -->
                     <table class="table table-striped table-bordered" style="width:100%;border-radius:12px;overflow:hidden;background:#fafbfc;">
                         <thead>
                             <tr style="background:#e3eaf1;">
@@ -257,6 +269,7 @@
                                 </td>
                                 <td>
                                     <?php
+                                    // Hiển thị tên kho
                                     foreach ($ds_kho as $kho) {
                                         if ($kho['IdKho'] == $phieu['id_kho']) {
                                             echo htmlspecialchars($kho['TenKho']);
@@ -280,6 +293,7 @@
                                 </td>
                                 <td><span class="badge" style="background:#388e3c;">Nhập</span></td>
                                 <td>
+                                    <!-- Nút sửa và xóa phiếu nhập -->
                                     <a href="?action=ql_phieuXNKho&edit_id=<?php echo $phieu['id']; ?>" class="btn btn-xs btn-warning"><i class="fa fa-pencil"></i> Sửa</a>
                                     <form method="post" class="delete-phieu-form" style="display:inline;">
                                         <input type="hidden" name="action" value="del_phieu">
@@ -303,6 +317,7 @@
                     <h4 style="font-weight:600;margin:0;">Danh sách Phiếu Xuất Kho</h4>
                 </div>
                 <div class="panel-body">
+                    <!-- Bảng danh sách phiếu xuất kho -->
                     <table class="table table-striped table-bordered" style="width:100%;border-radius:12px;overflow:hidden;background:#fafbfc;">
                         <thead>
                             <tr style="background:#e3eaf1;">
@@ -341,6 +356,7 @@
                                 </td>
                                 <td>
                                     <?php
+                                    // Hiển thị tên kho
                                     foreach ($ds_kho as $kho) {
                                         if ($kho['IdKho'] == $phieu['id_kho']) {
                                             echo htmlspecialchars($kho['TenKho']);
@@ -364,6 +380,7 @@
                                 </td>
                                 <td><span class="badge" style="background:#d32f2f;">Xuất</span></td>
                                 <td>
+                                    <!-- Nút sửa và xóa phiếu xuất -->
                                     <a href="?action=ql_phieuXNKho&edit_id=<?php echo $phieu['id']; ?>" class="btn btn-xs btn-warning"><i class="fa fa-pencil"></i> Sửa</a>
                                     <form method="post" class="delete-phieu-form" style="display:inline;">
                                         <input type="hidden" name="action" value="del_phieu">
@@ -384,7 +401,7 @@
     </div>
 </div>
 
-<!-- ======= Script xử lý JS cho thêm/xóa sản phẩm và xóa phiếu ======= -->
+<!-- ======= PHẦN: Script xử lý JS cho thêm/xóa sản phẩm và xóa phiếu ======= -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
 $(function() {

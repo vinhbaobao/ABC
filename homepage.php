@@ -1,5 +1,6 @@
 <?php include 'view/header.php'; ?>
 	<content>
+		<!-- Khu vực slide/banner chính -->
 		<div class="slide-block container">
 			<div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
 	  			<div class="carousel-inner" role="listbox">
@@ -10,6 +11,7 @@
 						<img class="img-responsive" src="images/featured/featured-3.jpg">
 	    			</div>
 	  			</div>
+	  			<!-- Nút điều hướng slide -->
 	  			<a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
 	    			<span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
 	    			<span class="sr-only">Previous</span>
@@ -20,6 +22,7 @@
 	  			</a>
 			</div>
 		</div>
+		<!-- Khu vực hiển thị các nhóm sản phẩm chính -->
 		<div class="main-block container">
 			<p class="title col-lg-12 col-md-12 col-sm-12 col-xs-12">CÁC NHÓM SẢN PHẨM CHÍNH</p>
 			<?php foreach ($categories as $category) { ?>
@@ -33,6 +36,7 @@
 			</a>
 			<?php } ?>
 		</div>
+		<!-- Khu vực hiển thị các sản phẩm mới nhất -->
 		<div class="main-block container">
 			<p class="title col-lg-12 col-md-12 col-sm-12 col-xs-12">CÁC SẢN PHẨM MỚI NHẤT</p>
 			<?php foreach ($products as $product) { ?>
@@ -44,6 +48,7 @@
 				</div>
 				<p class="categories-name"><?php echo $product['TenSP']; ?></p>
 				<p class="price"><span>$<?php echo $product['Gia']; ?></span> - <span class="discount">$<?php echo $product['GiamGia']; ?></span></p>
+				<!-- Nút thêm vào giỏ hàng hoặc chuyển hướng đăng nhập -->
 				<?php           
 		                if (isset($_SESSION['Username'])) {
 		                   echo "<a href='?action=addcart&item=".$product['IdSP']."'><span style='font-size: 25px;' class='glyphicon glyphicon-shopping-cart' aria-hidden='true'></a>";

@@ -2,6 +2,7 @@
 <html>
 <head>
 	<title>Group 05 - PHP 04</title>
+	<!-- Nhúng các file CSS và JS cần thiết -->
 	<link rel="stylesheet" type="text/css" href="css/bootstrap.css">
 	<link rel="stylesheet" type="text/css" href="css/font-awesome.css">
 	<script src="js/jquery-3.1.1.min.js"></script>
@@ -10,25 +11,30 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<script>
+		// Kích hoạt tooltip cho các phần tử có data-toggle="tooltip"
 		$(function () {
-  $('[data-toggle="tooltip"]').tooltip()
-})
+		  $('[data-toggle="tooltip"]').tooltip()
+		})
 	</script>
 </head>
 <body>
 	<header>
+		<!-- Thanh điều hướng (navbar) -->
 		<nav class="navbar navbar-default">
 			<div class="container">
 			<div class="navbar-header">
+	      		<!-- Nút thu gọn menu trên mobile -->
 	      		<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
 	        		<span class="sr-only">Toggle navigation</span>
 	        		<span class="icon-bar"></span>
 	        		<span class="icon-bar"></span>
 	        		<span class="icon-bar"></span>
 	      		</button>
+	      		<!-- Logo trang -->
 	      		<a class="navbar-brand" href="?action=home"><img src="images/logo2.png"class="logo" style="width: 140px; top: 50px;"></a>
 	    	</div>
 	    	<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+	    		<!-- Menu trái -->
 	    		<ul class="nav navbar-nav">
 	    			<li><a href="?action=home">TRANG CHỦ</a></li>
 	    			<li><a href="?action=productions&id_nsp=0">CỬA HÀNG</a></li>
@@ -36,6 +42,7 @@
 	        			<li><a href="?action=ql_phieuXNKho">QL Phiếu Xuất Nhập Kho</a></li>
 	        		<?php endif; ?>
 	    		</ul>
+	    		<!-- Menu phải (thông tin đăng nhập/đăng xuất) -->
 	    		<ul class="nav navbar-nav navbar-right">
 	    			<?php           
 		                if (isset($_SESSION['Username'])) {

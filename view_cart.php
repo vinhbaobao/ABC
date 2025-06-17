@@ -1,5 +1,5 @@
-
 <?php include 'view/header.php';
+// Xử lý cập nhật số lượng hoặc xóa sản phẩm khỏi giỏ hàng
 	if (isset($_POST['submit'])) {
     foreach ($_POST['qty'] as $key => $value) {
         if (($value == 0) and ( is_numeric($value))) {
@@ -12,7 +12,7 @@
 }
  ?>
  <style>
-    /* Style for form elements */
+    /* Style cho các thành phần form */
     input[type="text"],
     textarea,
     select {
@@ -34,14 +34,14 @@
         margin-right: 5px;
     }
 
-    /* Style for the agree policy label */
+    /* Style cho label chính sách đồng ý */
     label[for="agree_policy"] {
         display: block;
         margin-top: 15px;
         font-style: italic;
     }
 
-    /* Style for the submit button (not provided in the HTML snippet) */
+    /* Style cho nút submit (không có trong đoạn mã HTML) */
     input[type="submit"] {
         background-color: #4CAF50;
         color: white;
@@ -59,6 +59,7 @@
 
 	<content>
 		<div class="container">
+			<!-- Form cập nhật giỏ hàng -->
 			<form method="post">
 				<input type="hidden" name="action" value="view_cart">
 				<table class="table table-bordered">
@@ -70,6 +71,7 @@
 						<th style="width: 150px;color: #337ab7;">THÀNH TIỀN (VNĐ)</th>
 					</tr>
 					<?php 
+						// Hiển thị các sản phẩm trong giỏ hàng
 						$ok = 1;
         				if (isset($_SESSION['cart'])) {
 				            foreach ($_SESSION['cart'] as $k => $v) {
@@ -109,12 +111,13 @@
 					<tr>
 						<td colspan="5">
 							<div style="text-align:right;padding-right:30px;">
+								<!-- Hiển thị tổng tiền và nút cập nhật giỏ hàng -->
 								<p style="font-weight: bold;font-size:20px;">TỔNG TIỀN</p>
 								<p style="color:#3EC37D;font-size:16px;"><?php echo number_format($total); ?> VNĐ</p>
 								<input type="submit" name="submit" value="Cập nhập giỏ hàng">
 							</form>
 
-							
+							<!-- Form đặt hàng/thanh toán -->
 							<form method="post" style="margin-top:20px;">
 								<input type="hidden" name="action" value="thanhtoan">
 								<input type="hidden" name="userid" value="<?php	$username = $_SESSION['Username'];$username = get_id_user($username); echo $username;?>">
@@ -130,24 +133,25 @@
 								">
 								<input type="hidden" name="giatien" value="<?php echo $total;?>">
 								<input type="hidden" name="date" value="<?php echo date("d/m/y-h:i:sa");?>">
+								<!-- Thông tin giao hàng và thanh toán -->
 								<label for="shipping_address">Shipping Address:</label>
-    <input type="text" name="shipping_address" id="shipping_address">
-	<label for="Phone">Phone:</label>
-	<input type="text" name="Phone" id="Phone">
+    							<input type="text" name="shipping_address" id="shipping_address">
+								<label for="Phone">Phone:</label>
+								<input type="text" name="Phone" id="Phone">
 
-    <label for="order_note">Order Note:</label>
-    <textarea name="order_note" id="order_note"></textarea>
+    							<label for="order_note">Order Note:</label>
+    							<textarea name="order_note" id="order_note"></textarea>
 	
-    <label for="payment_method">Payment Method:</label>
-    <select name="payment_method" id="payment_method">
-        <option value="Bank Transfer">Bank Transfer</option>
-        <!-- Add more payment methods if needed -->
-    </select>
+    							<label for="payment_method">Payment Method:</label>
+    							<select name="payment_method" id="payment_method">
+        							<option value="Bank Transfer">Bank Transfer</option>
+        							<!-- Add more payment methods if needed -->
+    							</select>
 
-    <label>
-        <input type="checkbox" name="agree_policy" required>
-        I have read and agree to the store's policy.
-    </label>
+    							<label>
+        							<input type="checkbox" name="agree_policy" required>
+        							I have read and agree to the store's policy.
+    							</label>
 								<input type="submit" value="Đặt hàng">
 							</form>
 							</div>

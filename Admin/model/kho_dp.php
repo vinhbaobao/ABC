@@ -7,7 +7,7 @@ function get_all_kho() {
     return $result ? $result->fetchAll(PDO::FETCH_ASSOC) : [];
 }
 
-// Lấy tổng số sản phẩm tồn trong kho
+// Lấy tổng số sản phẩm tồn trong kho theo id kho
 function get_tong_sanpham_trong_kho($kho_id) {
     global $db;
     $stmt = $db->prepare("SELECT SUM(SoLuong) AS tong FROM sanpham WHERE id_kho = :idkho");
@@ -17,7 +17,7 @@ function get_tong_sanpham_trong_kho($kho_id) {
     return $row && $row['tong'] ? $row['tong'] : 0;
 }
 
-// Đếm số nhóm sản phẩm trong kho
+// Đếm số nhóm sản phẩm trong kho theo id kho
 function get_soluong_nhomsp_trong_kho($kho_id) {
     global $db;
     $stmt = $db->prepare("SELECT COUNT(DISTINCT IdNhomSP) AS so_nhom FROM sanpham WHERE id_kho = :idkho");
@@ -27,7 +27,7 @@ function get_soluong_nhomsp_trong_kho($kho_id) {
     return $row && $row['so_nhom'] ? $row['so_nhom'] : 0;
 }
 
-// Thống kê nhập, xuất, tồn sản phẩm trong kho
+// Thống kê tổng nhập, tổng xuất, tổng tồn sản phẩm trong kho
 function thong_ke_nhap_xuat_ton($kho_id) {
     global $db;
     // Kiểm tra nếu bảng phieunhap hoặc phieuxuat không tồn tại thì trả về 0
@@ -63,7 +63,7 @@ function thong_ke_nhap_xuat_ton($kho_id) {
     ];
 }
 
-// Thêm kho mới
+// Thêm kho mới vào database
 function them_kho($ten_kho, $diachi) {
     global $db;
     $query = "INSERT INTO kho (TenKho, DiaChi) VALUES (:ten_kho, :diachi)";
@@ -73,7 +73,7 @@ function them_kho($ten_kho, $diachi) {
     $stmt->execute();
 }
 
-// Thêm hàm xóa kho
+// Xóa kho theo IdKho
 function delete_kho($id_kho) {
     global $db;
     $stmt = $db->prepare("DELETE FROM kho WHERE IdKho = :id_kho");

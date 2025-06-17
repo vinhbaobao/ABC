@@ -1,4 +1,5 @@
 <?php
+// Lấy danh sách sản phẩm theo nhóm sản phẩm
 function get_sanpham_theo_nhomsp($category_id) {
     global $db;
     $query = "SELECT * FROM sanpham WHERE sanpham.IdNhomSP = '$category_id' ORDER BY IdSP";
@@ -6,6 +7,7 @@ function get_sanpham_theo_nhomsp($category_id) {
     return $products;
 }
 
+// Lấy số lượng sản phẩm theo nhóm sản phẩm
 function get_soluong_sanpham($category_id) {
     global $db;
     $query = "SELECT count(*) from sanpham WHERE sanpham.IdNhomSP = '$category_id'";
@@ -16,6 +18,7 @@ function get_soluong_sanpham($category_id) {
     return $product;
 }
 
+// Lấy 12 sản phẩm mới nhất
 function get_sanpham_12_new() {
     global $db;
     $query = "SELECT * FROM sanpham ORDER BY IdSP DESC LIMIT 12";
@@ -23,6 +26,7 @@ function get_sanpham_12_new() {
     return $product;
 }
 
+// Lấy toàn bộ sản phẩm
 function get_sanpham_all() {
     global $db;
     $query = "SELECT * FROM sanpham";
@@ -30,6 +34,7 @@ function get_sanpham_all() {
     return $product ? $product->fetchAll(PDO::FETCH_ASSOC) : [];
 }
 
+// Lấy thông tin sản phẩm theo IdSP
 function get_sanpham($id_sanpham) {
     global $db;
     $query = "SELECT * FROM sanpham WHERE IdSP = " . $id_sanpham;
@@ -38,13 +43,7 @@ function get_sanpham($id_sanpham) {
     return $product;
 }
 
-// function get_sanpham_theo_hangsx($hangsx) {
-//     global $db;
-//     $query = "SELECT * FROM sanpham WHERE HangSX = '$hangsx'";
-//     $product = $db->query($query);
-//     return $product;
-// }
-
+// Xóa sản phẩm theo IdSP
 function delete_sanpham($id_sanpham) {
     global $db;
     try {
@@ -60,6 +59,7 @@ function delete_sanpham($id_sanpham) {
     }
 }
 
+// Thêm sản phẩm mới vào database
 function add_sanpham($category_id, $ten_sp, $id_kho, $hinh, $han_su_dung, $chitiet, $het_han, $soluong) {
     global $db;
     try {
@@ -84,6 +84,7 @@ function add_sanpham($category_id, $ten_sp, $id_kho, $hinh, $han_su_dung, $chiti
     }
 }
 
+// Sửa thông tin sản phẩm theo IdSP
 function sua_sp($category_id, $ten_sp, $id_kho, $hinh, $han_su_dung, $chitiet, $het_han, $soluong, $id_sanpham){
     global $db;
     try {
@@ -109,6 +110,7 @@ function sua_sp($category_id, $ten_sp, $id_kho, $hinh, $han_su_dung, $chitiet, $
     }
 }
 
+// Lấy danh sách hình ảnh sản phẩm từ thư mục images/sanpham
 function get_hinh_sp(){
     $path= getcwd();
     $img_path = dirname($path).'/images/sanpham';

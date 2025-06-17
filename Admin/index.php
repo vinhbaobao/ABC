@@ -1,4 +1,5 @@
 <?php
+// ======= PHẦN: Import các file model cần thiết =======
 require('model/database.php');
 require('model/nhomsp_db.php');
 require('model/sanpham_db.php');
@@ -7,7 +8,7 @@ require('model/cart_db.php');
 require('model/kho_dp.php');
 
 
-// ===== XỬ LÝ PHIẾU XUẤT NHẬP KHO (POST) =====
+// ======= PHẦN: Xử lý các action liên quan đến phiếu xuất nhập kho (POST) =======
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && in_array($_POST['action'], ['add_phieu', 'edit_phieu', 'del_phieu'])) {
     require_once('model/phieu.php');
     $error_message = '';
@@ -60,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && in_array
     }
 }
 
-// ===== XÁC ĐỊNH ACTION =====
+// ======= PHẦN: Xác định action hiện tại =======
 if (isset($_POST['action'])) {
     $action = $_POST['action'];
 } else if (isset($_GET['action'])) {
@@ -69,7 +70,7 @@ if (isset($_POST['action'])) {
     $action = 'home';
 }
 
-// ===== TRANG CHỦ ADMIN =====
+// ======= PHẦN: Trang chủ admin =======
 if ($action == 'home') {
     $categories = get_nhomsp();
     $categories1 = get_nhomsp();
@@ -77,7 +78,7 @@ if ($action == 'home') {
     include('home.php');
 }
 
-// ===== QUẢN LÝ SẢN PHẨM =====
+// ======= PHẦN: Quản lý sản phẩm =======
 if ($action == 'ql_sp') {
     $category_id = isset($_GET['category_id']) ? $_GET['category_id'] : '0';
     if ($category_id == '0') {

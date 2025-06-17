@@ -1,7 +1,5 @@
 <?php
-// Các hàm trong phieu.php chỉ xử lý dữ liệu (thêm, sửa, xóa, lấy danh sách phiếu)
-// Không có bất kỳ đoạn code nào liên quan đến giao diện hoặc form HTML
-// Không có ảnh hưởng trực tiếp đến form trong ql_phieuXNKho.php
+// ======= PHẦN: Các hàm xử lý dữ liệu phiếu xuất nhập kho =======
 
 // Lấy tất cả phiếu xuất nhập kho
 function get_all_phieu($loai = null) {
@@ -20,7 +18,7 @@ function get_all_phieu($loai = null) {
     }
 }
 
-// Lấy chi tiết sản phẩm của một phiếu (nhiều sản phẩm)
+// Lấy chi tiết sản phẩm của một phiếu
 function get_chitiet_phieu($id_phieu) {
     global $db;
     $stmt = $db->prepare("SELECT ct.*, sp.TenSP FROM phieu_chitiet ct LEFT JOIN sanpham sp ON ct.id_sp = sp.IdSP WHERE ct.id_phieu = ?");
@@ -28,7 +26,7 @@ function get_chitiet_phieu($id_phieu) {
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
-// Thêm phiếu mới và cập nhật số lượng sản phẩm (nhiều sản phẩm)
+// Thêm phiếu mới và cập nhật số lượng sản phẩm
 function add_phieu($ma_phieu, $ngay, $nhan_vien, $loai_phieu, $id_kho, $ds_sp, $ds_soluong) {
     global $db;
     $db->beginTransaction();
@@ -133,5 +131,7 @@ function del_phieu($id) {
         $db->rollBack();
         throw $e;
     }
+}
+?>
 }
 ?>

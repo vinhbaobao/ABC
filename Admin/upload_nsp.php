@@ -1,18 +1,16 @@
 <?php
-$ds          = DIRECTORY_SEPARATOR;  //1
+$ds          = DIRECTORY_SEPARATOR;  //1: Ký tự phân tách thư mục phù hợp với hệ điều hành
  
-$storeFolder = '../images/nhomsp';   //2
+$storeFolder = '../images/nhomsp';   //2: Thư mục lưu trữ file upload cho nhóm sản phẩm
  
 if (!empty($_FILES)) {
-     
-    $tempFile = $_FILES['file']['tmp_name'];          //3             
-      
-    $targetPath = dirname( __FILE__ ) . $ds. $storeFolder . $ds;  //4
-     
-    $targetFile =  $targetPath. $_FILES['file']['name'];  //5
- 
+    //3: Lấy đường dẫn tạm của file vừa upload
+    $tempFile = $_FILES['file']['tmp_name'];             
+    //4: Xác định đường dẫn thư mục lưu trữ file
+    $targetPath = dirname( __FILE__ ) . $ds. $storeFolder . $ds;  
+    //5: Tạo đường dẫn file đích
+    $targetFile =  $targetPath. $_FILES['file']['name'];  
+    //6: Di chuyển file từ thư mục tạm sang thư mục lưu trữ
     move_uploaded_file($tempFile,$targetFile);
-     //6
 }
-
 ?>

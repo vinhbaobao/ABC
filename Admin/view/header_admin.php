@@ -5,6 +5,7 @@ session_start();
 <html lang="en">
 <head>
 	<title>Trang Quản lý</title>
+	<!-- Nhúng các file CSS và JS cần thiết cho giao diện admin -->
 	<link rel="stylesheet" type="text/css" href="../css/bootstrap.css">
 	<link rel="stylesheet" type="text/css" href="../css/font-awesome.css">
 	<link rel="stylesheet" type="text/css" href="../css/dropzone.css">
@@ -19,6 +20,7 @@ session_start();
 	<link rel="stylesheet" type="text/css" href="../css/styles_admin.css">
 	<script type="text/javascript" src="ckeditor/ckeditor.js"></script>
 	<style>
+		/* CSS cho layout và menu admin */
 		body {
 			background: #f4f6f9;
 		}
@@ -119,6 +121,7 @@ session_start();
 		}
 	</style>
 	<script>
+		// Khởi tạo DataTable và tooltip khi tài liệu sẵn sàng
 		$(document).ready(function(){
     		$('#sp_datatable').DataTable();
 		});
@@ -130,11 +133,13 @@ session_start();
 <body>
 <div class="container-fluid" style="padding:0;">
 	<div class="row admin-layout">
+		<!-- Sidebar trái: Thông tin user và menu -->
 		<div class="left-col col-lg-2 col-md-3 col-sm-3 col-xs-12">
 			<div class="user" style="width:100%;text-align:center;">
 				<div class="logo">
 					<center><img src="image/admin.png" height="70" alt=""></center>
 					<?php 
+					// Kiểm tra quyền admin, hiển thị tên và nút đăng xuất
 					if ($_SESSION["Loai"]==2) {
 						echo"<p>Xin chào, <b>".$_SESSION['Username']. "</b></p>
 						<p><a href='logout.php'><i class='fa fa-sign-out'></i> Đăng xuất</a></p>";
@@ -146,6 +151,7 @@ session_start();
 					?>
 				</div>
 			</div>
+			<!-- Menu chức năng quản trị -->
 			<div class="rightnav" style="width:100%;text-align:left;">
 				<table>
 					<thead>
@@ -155,24 +161,31 @@ session_start();
 					</thead>
 					<tbody>
 						<tr><td colspan="2">
+							<!-- Link tới trang thống kê -->
 							<a href="?action=home" class="menu-item<?php if(isset($_GET['action']) && $_GET['action']=='home') echo ' active'; ?>"><i class="fa fa-home"></i> Thống kê</a>
 						</td></tr>
 						<tr><td colspan="2">
+							<!-- Link tới quản lý người dùng -->
 							<a href="?action=ql_user&id=0" class="menu-item<?php if(isset($_GET['action']) && $_GET['action']=='ql_user') echo ' active'; ?>"><i class="fa fa-user"></i> Quản lý người dùng</a>
 						</td></tr>
 						<tr><td colspan="2">
+							<!-- Link tới quản lý đơn hàng -->
 							<a href="?action=ql_cart" class="menu-item<?php if(isset($_GET['action']) && $_GET['action']=='ql_cart') echo ' active'; ?>"><i class="fa fa-shopping-cart"></i> Quản lý đơn hàng</a>
 						</td></tr>
 						<tr><td colspan="2">
+							<!-- Link tới quản lý hình ảnh -->
 							<a href="?action=ql_hinhanh" class="menu-item<?php if(isset($_GET['action']) && $_GET['action']=='ql_hinhanh') echo ' active'; ?>"><i class="fa fa-picture-o"></i> Quản lý hình ảnh</a>
 						</td></tr>
 						<tr><td colspan="2">
+							<!-- Link tới quản lý sản phẩm -->
 							<a href="?action=ql_sp&category_id=0" class="menu-item<?php if(isset($_GET['action']) && $_GET['action']=='ql_sp') echo ' active'; ?>"><i class="fa fa-list-alt"></i> Quản lý sản phẩm</a>
 						</td></tr>
 						<tr><td colspan="2">
+							<!-- Link tới quản lý kho -->
 							<a href="?action=ql_kho" class="menu-item<?php if(isset($_GET['action']) && $_GET['action']=='ql_kho') echo ' active'; ?>"><i class="fa fa-cubes"></i> Quản lý kho</a>
 						</td></tr>
 						<tr><td colspan="2">
+							<!-- Link tới quản lý phiếu xuất nhập kho -->
 							<a href="?action=ql_phieuXNKho" class="menu-item<?php if(isset($_GET['action']) && $_GET['action']=='ql_phieuXNKho') echo ' active'; ?>"><i class="fa fa-file-text"></i> Quản lý Phiếu Xuất Nhập kho</a>
 						</td></tr>
 					</tbody>
