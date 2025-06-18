@@ -133,5 +133,4 @@ function del_phieu($id) {
     }
 }
 ?>
-}
-?>
+

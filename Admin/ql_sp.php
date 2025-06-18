@@ -129,6 +129,7 @@
                 </div>
             </div>
             <!-- Thêm kho -->
+            <?php if (isset($_SESSION['Loai']) && $_SESSION['Loai'] == 2): ?>
             <div class="panel panel-default" style="margin-bottom:16px;">
                 <div class="panel-heading">
                     <h4 style="font-weight:600;margin:0;">Thêm kho</h4>
@@ -149,6 +150,7 @@
                     <div id="them-kho-msg"></div>
                 </div>
             </div>
+            <?php endif; ?>
             <!-- Danh sách kho -->
             <div class="panel panel-default">
                 <div class="panel-heading" style="display:flex;align-items:center;justify-content:space-between;">
@@ -173,11 +175,13 @@
                             ?>
                             <tr>
                                 <td>
+                                    <?php if (isset($_SESSION['Loai']) && $_SESSION['Loai'] == 2): ?>
                                     <form method="post" class="delete-kho-form" action="" style="margin:0;">
                                         <input type="hidden" name="action" value="del_kho">
                                         <input type="hidden" name="id_kho" value="<?php echo $kho['IdKho']; ?>">
                                         <button type="submit" class="btn btn-link" style="padding:0;"><i class="fa fa-window-close"></i></button>
                                     </form>
+                                    <?php endif; ?>
                                 </td>
                                 <td>
                                     <a href="?action=ql_sp&kho_id=<?php echo $kho['IdKho']; ?>">
@@ -414,11 +418,13 @@ if (isset($_GET['ajax']) && isset($_GET['reload_kho'])) {
         foreach ($ds_kho as $kho): ?>
             <tr>
                 <td>
+                    <?php if (isset($_SESSION['Loai']) && $_SESSION['Loai'] == 2): ?>
                     <form method="post" class="delete-kho-form" action="">
                         <input type="hidden" name="action" value="del_kho">
                         <input type="hidden" name="id_kho" value="<?php echo $kho['IdKho']; ?>">
                         <button type="submit" class="btn btn-link" style="padding:0;"><i class="fa fa-window-close"></i></button>
                     </form>
+                    <?php endif; ?>
                 </td>
                 <td><?php echo htmlspecialchars($kho['TenKho']); ?></td>
                 <td><?php echo htmlspecialchars($kho['DiaChi']); ?></td>

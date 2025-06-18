@@ -103,15 +103,17 @@
                                     </select>
                                 </div>
                                 <!-- Chọn sản phẩm và số lượng -->
-                                <div class="form-group">
+                                <div class="form-group" id="sanpham-row-group">
                                     <label>Sản phẩm & Số lượng</label>
                                     <div id="ds_sanpham">
                                         <div class="row sanpham-row" style="margin-bottom:8px;">
                                             <div class="col-xs-7" style="padding-right:2px;">
-                                                <select name="id_sp[]" class="form-control" required>
+                                                <select name="id_sp[]" class="form-control sp-select" required>
                                                     <option value="">--Chọn sản phẩm--</option>
                                                     <?php foreach ($ds_sp as $sp): ?>
-                                                        <option value="<?php echo $sp['IdSP']; ?>"><?php echo htmlspecialchars($sp['TenSP']); ?></option>
+                                                        <option value="<?php echo $sp['IdSP']; ?>" data-kho="<?php echo $sp['id_kho']; ?>" data-sl="<?php echo $sp['SoLuong']; ?>">
+                                                            <?php echo htmlspecialchars($sp['TenSP']); ?> (Tồn: <?php echo $sp['SoLuong']; ?>)
+                                                        </option>
                                                     <?php endforeach; ?>
                                                 </select>
                                             </div>
@@ -404,6 +406,23 @@
 <!-- ======= PHẦN: Script xử lý JS cho thêm/xóa sản phẩm và xóa phiếu ======= -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
+<?php
+// Chuẩn bị dữ liệu sản phẩm theo kho cho JS
+$sp_theo_kho = [];
+foreach ($ds_kho as $kho) {
+    $sp_theo_kho[$kho['IdKho']] = [];
+    foreach ($ds_sp as $sp) {
+        if ($sp['id_kho'] == $kho['IdKho'] && $sp['SoLuong'] > 0) {
+            $sp_theo_kho[$kho['IdKho']][] = [
+                'IdSP' => $sp['IdSP'],
+                'TenSP' => $sp['TenSP'],
+                'SoLuong' => $sp['SoLuong']
+            ];
+        }
+    }
+}
+?>
+var spTheoKho = <?php echo json_encode($sp_theo_kho); ?>;
 $(function() {
     // Xác nhận xóa phiếu
     $('.delete-phieu-form').on('submit', function(e) {
@@ -417,10 +436,65 @@ $(function() {
     });
     // Thêm dòng sản phẩm mới trong form
     $('#add-sp-row').on('click', function() {
-        var row = $('#ds_sanpham .sanpham-row:first').clone();
-        row.find('select, input').val('');
+        var khoId = $('#id_kho').val();
+        var ds = spTheoKho[khoId] || [];
+        if (ds.length === 0) return;
+        var row = $('<div class="row sanpham-row" style="margin-bottom:8px;"></div>');
+        var colSp = $('<div class="col-xs-7" style="padding-right:2px;"></div>');
+        var colSl = $('<div class="col-xs-5" style="padding-left:2px;"></div>');
+        var select = $('<select name="id_sp[]" class="form-control sp-select" required></select>');
+        select.append('<option value="">--Chọn sản phẩm--</option>');
+        ds.forEach(function(sp) {
+            select.append('<option value="'+sp.IdSP+'" data-sl="'+sp.SoLuong+'">'+sp.TenSP+' (Tồn: '+sp.SoLuong+')</option>');
+        });
+        colSp.append(select);
+        colSl.append('<input type="number" name="so_luong[]" class="form-control" min="1" required placeholder="Số lượng">');
+        row.append(colSp).append(colSl);
         $('#ds_sanpham').append(row);
     });
+
+    // Lọc sản phẩm theo kho khi chọn kho
+    function renderSanPhamRows(khoId) {
+        var ds = spTheoKho[khoId] || [];
+        var $ds_sanpham = $('#ds_sanpham');
+        $ds_sanpham.empty();
+        if (ds.length === 0) {
+            $('#sanpham-row-group').hide();
+            return;
+        }
+        $('#sanpham-row-group').show();
+        // Luôn có ít nhất 1 dòng
+        var row = $('<div class="row sanpham-row" style="margin-bottom:8px;"></div>');
+        var colSp = $('<div class="col-xs-7" style="padding-right:2px;"></div>');
+        var colSl = $('<div class="col-xs-5" style="padding-left:2px;"></div>');
+        var select = $('<select name="id_sp[]" class="form-control sp-select" required></select>');
+        select.append('<option value="">--Chọn sản phẩm--</option>');
+        ds.forEach(function(sp) {
+            select.append('<option value="'+sp.IdSP+'" data-sl="'+sp.SoLuong+'">'+sp.TenSP+' (Tồn: '+sp.SoLuong+')</option>');
+        });
+        colSp.append(select);
+        colSl.append('<input type="number" name="so_luong[]" class="form-control" min="1" required placeholder="Số lượng">');
+        row.append(colSp).append(colSl);
+        $ds_sanpham.append(row);
+    }
+
+    $('#id_kho').on('change', function() {
+        var khoId = $(this).val();
+        if (khoId && spTheoKho[khoId] && spTheoKho[khoId].length > 0) {
+            renderSanPhamRows(khoId);
+        } else {
+            $('#ds_sanpham').empty();
+            $('#sanpham-row-group').hide();
+        }
+    });
+
+    // Khi load trang, nếu đã chọn kho thì render lại sản phẩm
+    var khoIdInit = $('#id_kho').val();
+    if (khoIdInit && spTheoKho[khoIdInit] && spTheoKho[khoIdInit].length > 0) {
+        renderSanPhamRows(khoIdInit);
+    } else {
+        $('#sanpham-row-group').hide();
+    }
 });
 </script>
 

@@ -1,5 +1,10 @@
-<?php include 'view/header_admin.php'; ?>
 <?php
+include 'view/header_admin.php';
+// Chỉ cho phép admin xem dashboard, nhân viên chuyển hướng về ql_phieuXNKho
+if (isset($_SESSION['Loai']) && $_SESSION['Loai'] == 1) {
+    header("Location: index.php?action=ql_phieuXNKho");
+    exit();
+}
 $year = date('Y');
 if (!function_exists('get_soluong_phieu_thang')) {
     function get_soluong_phieu_thang($loai, $month, $year) {
@@ -192,23 +197,33 @@ for ($m = 1; $m <= 12; $m++) {
 			<div class="title">
 				<h2>Thống kê Phiếu Xuất Nhập (năm <?php echo $year; ?>)</h2>
 			</div>
-			<div class="main-mini-content">
-				<table class="table table-striped" id="center-content">
-					<thead>
+			<div class="main-mini-content" style="padding-bottom:0;">
+				<!-- Nút thu gọn bảng -->
+				<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+					<h3 style="margin: 0;">Bảng Phiếu Xuất Nhập</h3>
+					<button id="toggle-table-phieu" style="border: none; background: none; cursor: pointer;">
+						<span id="arrow-icon" style="display: inline-block; transition: transform 0.2s;">&#9660;</span>
+					</button>
+				</div>
+				<!-- Bảng nằm trong khung bo góc, nền sáng, có thể thu gọn -->
+				<div id="table-phieu-xuat-nhap" style="border-radius:12px; overflow:hidden; background:#fafbfc; box-shadow:0 2px 8px rgba(40,62,81,0.07); margin-bottom:0; transition:height 0.2s;">
+					<table class="table table-striped" id="center-content" style="margin-bottom:0;">
+						<thead>
+							<tr>
+								<th>Tháng</th>
+								<th>Phiếu nhập</th>
+								<th>Phiếu xuất</th>
+							</tr>
+						</thead>
+						<?php for ($m = 1; $m <= 12; $m++): ?>
 						<tr>
-							<th>Tháng</th>
-							<th>Phiếu nhập</th>
-							<th>Phiếu xuất</th>
+							<td>Tháng <?php echo $m; ?></td>
+							<td><?php echo $data_nhap[$m-1]; ?> phiếu</td>
+							<td><?php echo $data_xuat[$m-1]; ?> phiếu</td>
 						</tr>
-					</thead>
-					<?php for ($m = 1; $m <= 12; $m++): ?>
-					<tr>
-						<td>Tháng <?php echo $m; ?></td>
-						<td><?php echo $data_nhap[$m-1]; ?> phiếu</td>
-						<td><?php echo $data_xuat[$m-1]; ?> phiếu</td>
-					</tr>
-					<?php endfor; ?>
-				</table>
+						<?php endfor; ?>
+					</table>
+				</div>
 			</div>
 			<!-- Vùng biểu đồ cột phiếu xuất nhập -->
 			<div class="title">
@@ -255,3 +270,16 @@ for ($m = 1; $m <= 12; $m++) {
 </body>
 
 </html>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+	const btn = document.getElementById('toggle-table-phieu');
+	const table = document.getElementById('table-phieu-xuat-nhap');
+	const arrow = document.getElementById('arrow-icon');
+	let isOpen = true;
+	btn.addEventListener('click', function() {
+		isOpen = !isOpen;
+		table.style.display = isOpen ? 'block' : 'none';
+		arrow.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
+	});
+});
+</script>

@@ -75,11 +75,13 @@
 								<th style="width:50px;">&nbsp;</th>
 								<th>Tên Nhân viên</th>
 								<th>Email</th>
-								<th>Cấp độ</th>
+								<th>Chức vụ</th>
 							</tr>
 						</thead>
 						<tbody>
-						<?php foreach ($users as $user) : ?>
+						<?php 
+						$is_admin = isset($_SESSION['Loai']) && $_SESSION['Loai'] == 2;
+						foreach ($users as $user) : ?>
 							<tr>
 								<td>
 									<!-- Nút xóa user -->
@@ -92,14 +94,19 @@
 								<td><?php echo htmlspecialchars($user['Username']); ?></td>
 								<td><?php echo htmlspecialchars($user['Email']); ?></td>
 								<td>
-									<?php
-										// Hiển thị cấp độ user
-										if ($user['Loai'] == 1){
-											echo 'Nhân viên';
-										} else {
-											echo 'Quản trị viên';
-										}
-									?>
+									<?php if ($is_admin && $_SESSION['Username'] != $user['Username']) : ?>
+										<form method="post" style="display:inline;">
+											<input type="hidden" name="action" value="update_role">
+											<input type="hidden" name="id" value="<?php echo $user['IdUser']; ?>">
+											<select name="role" class="form-control" style="display:inline;width:auto;height:28px;padding:2px 8px;">
+												<option value="1" <?php if($user['Loai']==1) echo 'selected'; ?>>Nhân viên</option>
+												<option value="2" <?php if($user['Loai']==2) echo 'selected'; ?>>Quản trị viên</option>
+											</select>
+											<button type="submit" class="btn btn-xs btn-success" style="margin-left:4px;">Lưu</button>
+										</form>
+									<?php else: ?>
+										<?php echo ($user['Loai'] == 1) ? 'Nhân viên' : 'Quản trị viên'; ?>
+									<?php endif; ?>
 								</td>
 							</tr>
 						<?php endforeach; ?>
@@ -116,7 +123,7 @@
 				</div>
 				<div class="panel-body">
 					<form class="form-group" method="post" style="margin-bottom:0;">
-						<input type="hidden" name="action" value="them_admin">
+						<input type="hidden" name="action" value="them_user">
 						<div class="form-group">
 							<label for="user">Nhập tên</label>
 							<input type="text" class="form-control" name="user" placeholder="Nhập tên">
@@ -128,6 +135,13 @@
 						<div class="form-group">
 							<label for="email">Email</label>
 							<input type="email" class="form-control" name="email" placeholder="Email">
+						</div>
+						<div class="form-group">
+							<label for="loai">Chức vụ</label>
+							<select class="form-control" name="loai">
+								<option value="1">Nhân viên</option>
+								<option value="2">Quản trị viên</option>
+							</select>
 						</div>
 						<button type="submit" class="btn btn-primary">Thêm</button>
 					</form>

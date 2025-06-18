@@ -163,11 +163,4 @@
     </div>
     <?php endif; ?>
 </div>
-</body>
-</html>
-</body>
-</html>
-</body>
-</html>
-</body>
-</html>
+
