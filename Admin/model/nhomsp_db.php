@@ -3,35 +3,35 @@
 // Lấy toàn bộ danh sách nhóm sản phẩm
 function get_nhomsp() {
     global $db;
-    $query = 'SELECT * FROM nhomsp';
-    $result = $db->query($query);
-    return $result ? $result->fetchAll(PDO::FETCH_ASSOC) : [];
+    $stmt = $db->prepare("SELECT * FROM nhomsp");
+    $stmt->execute();
+    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    return $rows ? $rows : [];
 }
 
 // Lấy tên nhóm sản phẩm theo IdNhomSP
 function get_ten_nhomsp($category_id) {
     global $db;
-    $query = "SELECT * FROM nhomsp WHERE IdNhomSP = $category_id";
-    $category = $db->query($query);
-    $category = $category->fetch();
-    $category_name = $category['TenNhomSP'];
-    return $category_name;
+    $stmt = $db->prepare("SELECT TenNhomSP FROM nhomsp WHERE IdNhomSP = :id");
+    $stmt->bindValue(':id', $category_id, PDO::PARAM_INT);
+    $stmt->execute();
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    return $row ? $row['TenNhomSP'] : '';
 }
 
 // Lấy hình nhóm sản phẩm theo IdNhomSP
 function get_hinh_nhomsp($category_id) {
     global $db;
-    $query = "SELECT * FROM nhomsp WHERE IdNhomSP = $category_id";
-    $category = $db->query($query);
-    $category = $category->fetch();
-    $category_name = $category['HinhNSP'];
-    return $category_name;
+    $stmt = $db->prepare("SELECT HinhNSP FROM nhomsp WHERE IdNhomSP = :id");
+    $stmt->bindValue(':id', $category_id, PDO::PARAM_INT);
+    $stmt->execute();
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    return $row ? $row['HinhNSP'] : '';
 }
 
 // Xóa nhóm sản phẩm theo IdNhomSP
 function delete_nhomsp($category_id) {
     global $db;
-    // Đảm bảo xóa an toàn bằng prepare
     $stmt = $db->prepare("DELETE FROM nhomsp WHERE IdNhomSP = :id");
     $stmt->bindValue(':id', $category_id, PDO::PARAM_INT);
     $stmt->execute();
@@ -40,15 +40,20 @@ function delete_nhomsp($category_id) {
 // Thêm nhóm sản phẩm mới vào database
 function them_nhomsp($ten_nhomsp, $hinh_nhomsp) {
     global $db;
-    $query = "INSERT INTO `nhomsp` (`IdNhomSP`, `TenNhomSP`, `HinhNSP`) VALUES (NULL, '$ten_nhomsp', '$hinh_nhomsp');";
-    $db->exec($query);
+    $stmt = $db->prepare("INSERT INTO nhomsp (TenNhomSP, HinhNSP) VALUES (:ten, :hinh)");
+    $stmt->bindValue(':ten', $ten_nhomsp, PDO::PARAM_STR);
+    $stmt->bindValue(':hinh', $hinh_nhomsp, PDO::PARAM_STR);
+    $stmt->execute();
 }
 
 // Sửa thông tin nhóm sản phẩm theo IdNhomSP
 function sua_nhomsp($ten_nhomsp, $hinh_nhomsp, $category_id){
     global $db;
-    $query = "UPDATE `nhomsp` SET `TenNhomSP` = '$ten_nhomsp', `HinhNSP` = '$hinh_nhomsp' WHERE `nhomsp`.`IdNhomSP` = '$category_id'";
-    $db->exec($query);
+    $stmt = $db->prepare("UPDATE nhomsp SET TenNhomSP = :ten, HinhNSP = :hinh WHERE IdNhomSP = :id");
+    $stmt->bindValue(':ten', $ten_nhomsp, PDO::PARAM_STR);
+    $stmt->bindValue(':hinh', $hinh_nhomsp, PDO::PARAM_STR);
+    $stmt->bindValue(':id', $category_id, PDO::PARAM_INT);
+    $stmt->execute();
 }
 
 // Lấy danh sách hình nhóm sản phẩm

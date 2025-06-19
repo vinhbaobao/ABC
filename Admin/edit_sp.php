@@ -66,7 +66,7 @@
 					<div class="main-mini-content">
 						<form class="form-horizontal" method="post" enctype="multipart/form-data">
 							<input type="hidden" name="action" value="sua_sp">
-							<input type="hidden" name="product_id" value="<?php echo $products['IdSP']; ?>">
+							<input type="hidden" name="id_sanpham" value="<?php echo $products['IdSP']; ?>">
 							<input type="hidden" name="hinh" value="<?php echo $products['Hinh']; ?>">
 							<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
 								<!-- Hiển thị hình ảnh sản phẩm -->
@@ -89,9 +89,10 @@
 								</div>
 								<!-- Hiển thị chi tiết sản phẩm -->
 								<div class="form-group">
-									<label for="ten_sp" class="col-sm-12 control-label">Chi tiết sản phẩm</label>
+									<label for="chitiet" class="col-sm-12 control-label">Chi tiết sản phẩm</label>
 								    <div class="col-sm-12" style="margin-top:20px;">
-								      <?php echo $products['ChiTiet']; ?>
+								      <textarea id="chitiet" name="chitiet"><?php echo htmlspecialchars($products['ChiTiet']); ?></textarea>
+								      <script type="text/javascript">CKEDITOR.replace('chitiet');</script>
 								    </div>
 								</div>	
 							</div>

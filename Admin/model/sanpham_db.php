@@ -36,11 +36,12 @@ function get_sanpham_all() {
 
 // Lấy thông tin sản phẩm theo IdSP
 function get_sanpham($id_sanpham) {
-    global $db;
-    $query = "SELECT * FROM sanpham WHERE IdSP = " . $id_sanpham;
-    $product = $db->query($query);
-    $product = $product->fetch();
-    return $product;
+     global $db;
+    $query = "SELECT * FROM sanpham WHERE IdSP = :id";
+    $stmt = $db->prepare($query);
+    $stmt->bindValue(':id', (int)$id_sanpham, PDO::PARAM_INT);
+    $stmt->execute();
+    return $stmt->fetch(PDO::FETCH_ASSOC);
 }
 
 // Xóa sản phẩm theo IdSP

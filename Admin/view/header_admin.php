@@ -2,6 +2,10 @@
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
+if (!isset($_SESSION["Loai"]) || ($_SESSION["Loai"] != 1 && $_SESSION["Loai"] != 2)) {
+    header("location:../index.php");
+    exit();
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -192,3 +196,4 @@ if (session_status() === PHP_SESSION_NONE) {
 				</table>
 			</div>
 		</div>
+		

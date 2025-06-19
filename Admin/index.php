@@ -293,5 +293,71 @@ if ($action == 'home') {
     header("Location: index.php?action=ql_user&id=0");
     exit();
 }
+else if ($action == 'edit_nsp') {
+    include('sua_nhomsp.php');
+    exit();
+} else if ($action == 'sua_nhomsp') {
+    $category_id = $_POST['category_id'];
+    $ten_nhomsp = $_POST['ten_nhomsp'];
+    $hinh_nhomsp = '';
+    // Xử lý upload hình ảnh nhóm sản phẩm
+    if (isset($_FILES['hinh_nhomsp']) && $_FILES['hinh_nhomsp']['error'] == 0) {
+        $target_dir = "../images/nhomsp/";
+        $file_name = basename($_FILES["hinh_nhomsp"]["name"]);
+        $target_file = $target_dir . $file_name;
+        if (move_uploaded_file($_FILES["hinh_nhomsp"]["tmp_name"], $target_file)) {
+            $hinh_nhomsp = $file_name;
+        }
+    }
+    else if (isset($_POST['hinh_nhomsp'])) {
+        $hinh_nhomsp = $_POST['hinh_nhomsp'];
+    }
+    sua_nhomsp($ten_nhomsp, $hinh_nhomsp, $category_id);
+    header("Location: .?action=ql_sp&category_id=0");
+    exit();
+} else if ($action == 'edit_sp') {
+    $id_sanpham = isset($_GET['id_sanpham']) ? $_GET['id_sanpham'] : (isset($_GET['product_id']) ? $_GET['product_id'] : null);
+    if (!$id_sanpham) {
+        header("Location: .?action=ql_sp&category_id=0");
+        exit();
+    }
+    $products = get_sanpham($id_sanpham);
+    $categories = get_nhomsp();
+    $kho = get_all_kho();
+    include('edit_sp.php'); // Đổi từ sua_sp.php sang edit_sp.php
+    exit();
+} else if ($action == 'sua_sp') {
+    $id_sanpham = $_POST['id_sanpham'];
+    $category_id = $_POST['category_id'];
+    $ten_sp = $_POST['ten_sp'];
+    $id_kho = $_POST['id_kho'];
+    // Xử lý upload hình ảnh
+    $hinh = '';
+    if (isset($_FILES['hinh_file']) && $_FILES['hinh_file']['error'] == 0) {
+        $target_dir = "../images/sanpham/";
+        $file_name = basename($_FILES["hinh_file"]["name"]);
+        $target_file = $target_dir . $file_name;
+        if (move_uploaded_file($_FILES["hinh_file"]["tmp_name"], $target_file)) {
+            $hinh = "/sanpham/" . $file_name;
+        }
+    } else if (isset($_POST['hinh']) && !empty($_POST['hinh'])) {
+        // Nếu không upload mới thì lấy lại hình cũ
+        $hinh = $_POST['hinh'];
+    } else {
+        // Nếu không có hình cũ và không upload mới, để rỗng
+        $hinh = '';
+    }
+    $hansd = date('Y-m-d', strtotime($_POST['hansd']));
+    $chitiet = $_POST['chitiet'];
+    $hethan = date('Y-m-d', strtotime($_POST['hethan']));
+    $soluong = $_POST['soluong'];
+    sua_sp($category_id, $ten_sp, $id_kho, $hinh, $hansd, $chitiet, $hethan, $soluong, $id_sanpham);
+    header("Location: .?action=ql_sp&category_id=0");
+    exit();
+} else if ($action == 'logout') {
+    session_destroy();
+    header("Location: ../index.php");
+    exit();
+} 
 
 ?>

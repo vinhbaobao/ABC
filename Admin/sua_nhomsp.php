@@ -1,4 +1,20 @@
-<?php include 'view/header_admin.php'; ?>
+<?php
+include_once 'model/nhomsp_db.php';
+
+// Lấy danh sách nhóm sản phẩm
+$categories = get_nhomsp();
+
+// Lấy thông tin nhóm sản phẩm cần sửa
+$category_id = isset($_GET['category_id']) ? (int)$_GET['category_id'] : 0;
+$category_name1 = '';
+$category_img = '';
+if ($category_id > 0) {
+    $category_name1 = get_ten_nhomsp($category_id);
+    $category_img = get_hinh_nhomsp($category_id);
+}
+
+include 'view/header_admin.php';
+?>
 <style>
 /* ======= Giao diện CSS cho trang quản lý phiếu xuất nhập kho ======= */
 .panel {

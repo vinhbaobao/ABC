@@ -1,4 +1,3 @@
-<?php include 'view/header_admin.php'; ?>
 <style>
 /* ======= PHẦN: Style giao diện quản lý sản phẩm ======= */
 .panel {
@@ -55,6 +54,44 @@
     }
 }
 </style>
+
+<?php
+include 'view/header_admin.php';
+
+/* ======= PHẦN: Xử lý dữ liệu đầu vào và truy vấn ======= */
+// Lấy danh sách nhóm sản phẩm
+$categories = [];
+$stmt = $db->query("SELECT * FROM nhomsp");
+foreach ($stmt as $row) {
+    $categories[] = $row;
+}
+
+// Lấy danh sách kho
+$ds_kho = [];
+$stmt_kho = $db->query("SELECT IdKho, TenKho FROM kho");
+foreach ($stmt_kho as $row_kho) {
+    $ds_kho[$row_kho['IdKho']] = $row_kho['TenKho'];
+}
+
+// Lấy danh sách sản phẩm theo kho nếu có tham số kho_id
+if (isset($_GET['kho_id']) && is_numeric($_GET['kho_id'])) {
+    $kho_id = (int)$_GET['kho_id'];
+    // Lấy sản phẩm theo kho từ database (sửa IdKho -> id_kho)
+    $stmt = $db->prepare("SELECT sp.*, nsp.TenNhomSP FROM sanpham sp 
+                          LEFT JOIN nhomsp nsp ON sp.IdNhomSP = nsp.IdNhomSP 
+                          WHERE sp.id_kho = ?");
+    $stmt->execute([$kho_id]);
+    $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $category_name = isset($ds_kho[$kho_id]) ? 'Kho: ' . htmlspecialchars($ds_kho[$kho_id]) : '';
+} else {
+    // Nếu không có kho_id, lấy tất cả sản phẩm (hoặc logic cũ của bạn)
+    if (!isset($products)) {
+        $stmt = $db->query("SELECT sp.*, nsp.TenNhomSP FROM sanpham sp 
+                            LEFT JOIN nhomsp nsp ON sp.IdNhomSP = nsp.IdNhomSP");
+        $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+}
+?>
 
 <!-- ======= PHẦN: Layout chính, tiêu đề trang ======= -->
 <div class="right-col col-lg-10 col-md-9 col-sm-9 col-xs-12" style="background:#f4f6f9;color:#283e51;min-height:100vh;padding:16px 8px 8px 8px;">
@@ -216,8 +253,8 @@
                             <select class="form-control" name="category_id" id="category_id" required>
                         <option value="0">--Chọn nhóm --</option>
                         <?php foreach ($categories2 as $category) : ?> 
-                            <option value="<?php echo $category['IdNhomSP']; ?>"> 
-                                <?php echo $category['TenNhomSP']; ?> 
+                            <option value="<?php echo $category['IdNhomSP']; ?>" data-tennhomsp="<?php echo htmlspecialchars($category['TenNhomSP']); ?>">
+                                <?php echo $category['TenNhomSP']; ?>
                             </option> 
                         <?php endforeach; ?> 
                     </select>
@@ -243,11 +280,11 @@
                             <label for="hinh">Chọn hình ảnh</label>
                             <input type="file" class="form-control" name="hinh_file" id="hinh" required>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group" id="group-hansd">
                             <label for="hansd">Hạn sử dụng</label>
                             <input type="date" class="form-control" name="hansd" id="hansd" required>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group" id="group-hethan">
                             <label for="hethan">Hết hạn</label>
                             <input type="date" class="form-control" name="hethan" id="hethan" required>
                         </div>
@@ -380,6 +417,18 @@ $(function() {
 		var $icon = $('#toggle-kho-list-icon');
 		$icon.toggleClass('glyphicon-chevron-down glyphicon-chevron-right');
 	});
+    // Ẩn/hiện hạn sử dụng, hết hạn theo nhóm sản phẩm
+    $('#category_id').on('change', function() {
+        var selected = $(this).find('option:selected');
+        var tennhom = selected.data('tennhomsp');
+        if (tennhom && tennhom.trim().toLowerCase() === 'vật sk') {
+            $('#group-hansd, #group-hethan').hide();
+            $('#hansd, #hethan').prop('required', false);
+        } else {
+            $('#group-hansd, #group-hethan').show();
+            $('#hansd, #hethan').prop('required', true);
+        }
+    }).trigger('change'); // Gọi luôn khi load trang
 });
 </script>
 <script>
@@ -474,19 +523,25 @@ function validateKhoForm() {
 }
 // Kiểm tra form thêm sản phẩm
 function validateSanPhamForm() {
-	var ten = document.getElementById('ten_sp').value.trim();
-	var nhom = document.getElementById('category_id').value;
-	var kho = document.getElementById('id_kho').value;
-	var hinh = document.getElementById('hinh').value;
-	var hansd = document.getElementById('hansd').value;
-	var hethan = document.getElementById('hethan').value;
-	var soluong = document.getElementById('soluong').value;
-	// Cho phép chitiet để trống
-	// var chitiet = CKEDITOR.instances.chitiet.getData().trim();
-	if (!ten || nhom == "0" || kho == "0" || !hinh || !hansd || !hethan || !soluong) {
-		alert('Vui lòng nhập đầy đủ thông tin sản phẩm!');
-		return false;
-	}
-	return true;
+    var ten = document.getElementById('ten_sp').value.trim();
+    var nhom = document.getElementById('category_id').value;
+    var kho = document.getElementById('id_kho').value;
+    var hinh = document.getElementById('hinh').value;
+    var hansd = document.getElementById('hansd').value;
+    var hethan = document.getElementById('hethan').value;
+    var soluong = document.getElementById('soluong').value;
+    var tennhom = $('#category_id option:selected').data('tennhomsp');
+    if (!ten || nhom == "0" || kho == "0" || !hinh || !soluong) {
+        alert('Vui lòng nhập đầy đủ thông tin sản phẩm!');
+        return false;
+    }
+    if (!(tennhom && tennhom.trim().toLowerCase() === 'vật sk')) {
+        if (!hansd || !hethan) {
+            alert('Vui lòng nhập hạn sử dụng và hết hạn!');
+            return false;
+        }
+    }
+    return true;
 }
+
 </script>
