@@ -282,12 +282,8 @@ if ($action == 'home') {
                 $tb["user_message"] = "Mật khẩu phải có ít nhất 1 chữ hoa!";
             } else {
                 // Thêm vào bảng user với trường Loai (1: nhân viên, 2: quản trị viên)
-                try {
-                    them_user($user, $email, $pass, $loai);
-                    $tb["user_message"] = ($loai == 2) ? "Thêm quản trị viên thành công!" : "Thêm nhân viên thành công!";
-                } catch (Exception $e) {
-                    $tb["user_message"] = "Lỗi SQL: " . $e->getMessage();
-                }
+                them_user($user, $email, $pass, $loai);
+                $tb["user_message"] = ($loai == 2) ? "Thêm quản trị viên thành công!" : "Thêm nhân viên thành công!";
             }
         } else {
             $tb["user_message"] = "Vui lòng nhập đầy đủ thông tin!";
@@ -297,3 +293,5 @@ if ($action == 'home') {
     header("Location: index.php?action=ql_user&id=0");
     exit();
 }
+
+?>

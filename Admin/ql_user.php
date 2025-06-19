@@ -158,6 +158,22 @@ $user = $pass = $email = null;
 					</form>
 				</div>
 			</div>
+			<!-- Form thêm chức vụ mới -->
+			<div class="panel panel-default" style="margin-top:24px;">
+				<div class="panel-heading">
+					<h4 style="font-weight:600;margin:0;">Thêm chức vụ mới</h4>
+				</div>
+				<div class="panel-body">
+					<form class="form-group" method="post" action="index.php?action=them_chucvu" style="margin-bottom:0;">
+						<input type="hidden" name="action" value="them_chucvu">
+						<div class="form-group">
+							<label for="tenchucvu">Tên chức vụ</label>
+							<input type="text" class="form-control" name="tenchucvu" placeholder="Nhập tên chức vụ mới" required>
+						</div>
+						<button type="submit" class="btn btn-success">Thêm chức vụ</button>
+					</form>
+				</div>
+			</div>
 			<?php endif; ?>
 		</div>
 	</div>
