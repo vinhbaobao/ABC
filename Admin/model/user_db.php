@@ -1,4 +1,11 @@
 <?php 
+// Đảm bảo biến $db luôn tồn tại và kết nối PDO thành công
+if (!isset($db) || !$db) {
+    require_once __DIR__ . '/database.php';
+    if (!isset($db) || !$db) {
+        die('Không kết nối được database!');
+    }
+}
 // Thêm user mới vào bảng user (hash mật khẩu, cho phép chọn loại)
 function them_user($user, $email, $pass, $loai = 1){
     global $db;
@@ -7,11 +14,10 @@ function them_user($user, $email, $pass, $loai = 1){
     $stmt->execute([$user, $email, $hashed, $loai]);
 }
 
-// Lấy toàn bộ danh sách user, sắp xếp theo Loai
 function get_user() {
     global $db;
     $stmt = $db->query("SELECT * FROM user ORDER BY Loai");
-    return $stmt;
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
 // Lấy IdUser theo Username (prepared statement)
@@ -35,7 +41,7 @@ function get_user_theo_loai($id) {
     global $db;
     $stmt = $db->prepare("SELECT * FROM user WHERE Loai = ?");
     $stmt->execute([$id]);
-    return $stmt;
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
 // Lấy Loai user theo IdUser (prepared statement)
@@ -90,5 +96,13 @@ function them_admin($user, $email, $pass) {
     $statement->bindValue(':pass', password_hash($pass, PASSWORD_DEFAULT));
     $statement->execute();
     $statement->closeCursor();
+}
+function update_role($id, $role) {
+    global $db;
+    $query = 'UPDATE user SET Loai = :role WHERE IdUser = :id';
+    $statement = $db->prepare($query);
+    $statement->bindValue(':role', $role);
+    $statement->bindValue(':id', $id);
+    return $statement->execute();
 }
 ?>

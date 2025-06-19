@@ -217,4 +217,83 @@ if ($action == 'home') {
     include('home.php');
     exit();
 }
-?>
+// ===== QUẢN LÝ NGƯỜI DÙNG =====
+ else if ($action == 'ql_user') {
+    $id = $_GET['id'];
+    if($id =='0'){
+        $users = get_user();
+        $breadcrumb = 'Tất cả';
+        include('ql_user.php');
+    } else {
+        $users = get_user_theo_loai($id);
+        $breadcrumb = get_loai_user($id);
+        if($breadcrumb == '1'){
+            $breadcrumb = 'Người dùng';
+        } else {
+            $breadcrumb = 'Quản trị viên';
+        }
+        include('ql_user.php');
+    }
+// ===== XÓA NGƯỜI DÙNG =====
+} else if ($action == 'del_user') {
+    $id = $_POST['id'];
+    delete_user($id);
+    header("Location: .?action=ql_user&id=0");
+    exit();
+// ===== CẬP NHẬT CHỨC VỤ NGƯỜI DÙ
+} else if ($action == 'update_role') {
+    $id = $_POST['id'];
+    $role = $_POST['role'];
+    update_role($id, $role);
+    header("Location: .?action=ql_user&id=0");
+    exit();
+}  else if ($action == 'them_admin') {
+    $user = $_POST['user'];
+    $email = $_POST['email'];
+    $pass = $_POST['pass'];
+    them_admin($user, $email, $pass);
+    header("Location: .?action=ql_user&id=0");
+// ===== QUẢN LÝ GIỎ HÀNG =====
+} else if ($action == 'ql_cart') {
+    $categories = get_cart();
+    include('ql_cart.php');
+// ===== XÓA GIỎ HÀNG =====
+} else if ($action == 'del_cart') {
+    $id = $_POST['id'];
+    delete_cart($id);
+    header("Location: .?action=ql_cart");
+    exit();
+} else if ($action == 'up_cart') {
+    $id = $_POST['id'];
+    $soluong = $_POST['soluong'];
+    update_cart($id, $soluong);
+    header("Location: .?action=ql_cart");
+    exit();
+} else if ($action == 'them_user') {
+    // Xử lý thêm người dùng từ form (POST)
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $user = isset($_POST['user']) ? trim($_POST['user']) : '';
+        $pass = isset($_POST['pass']) ? $_POST['pass'] : '';
+        $email = isset($_POST['email']) ? trim($_POST['email']) : '';
+        $loai = isset($_POST['loai']) ? intval($_POST['loai']) : 1;
+        $tb = [];
+        if ($user && $pass && $email) {
+            if (!preg_match('/[A-Z]/', $pass)) {
+                $tb["user_message"] = "Mật khẩu phải có ít nhất 1 chữ hoa!";
+            } else {
+                // Thêm vào bảng user với trường Loai (1: nhân viên, 2: quản trị viên)
+                try {
+                    them_user($user, $email, $pass, $loai);
+                    $tb["user_message"] = ($loai == 2) ? "Thêm quản trị viên thành công!" : "Thêm nhân viên thành công!";
+                } catch (Exception $e) {
+                    $tb["user_message"] = "Lỗi SQL: " . $e->getMessage();
+                }
+            }
+        } else {
+            $tb["user_message"] = "Vui lòng nhập đầy đủ thông tin!";
+        }
+        $_SESSION['user_message'] = $tb["user_message"];
+    }
+    header("Location: index.php?action=ql_user&id=0");
+    exit();
+}

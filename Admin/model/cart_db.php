@@ -28,4 +28,9 @@ function up_cart($userid, $chitiet, $giatien, $trangthai, $date, $cartid,$Phone,
     $query = "UPDATE `cart` SET `IdUser` = '$userid', `ChiTiet` = '$chitiet', `GiaTien` = '$giatien', `TrangThai` = '$trangthai', `ThoiGian` = '$date', `Phone` = '$Phone', `shipping_address` = '$shipping_address'  WHERE `cart`.`IdCart` = '$cartid'";
     $db->exec($query);
 }
+function update_cart($cartid, $trangthai) {
+    global $db;
+    $query = "UPDATE `cart` SET `TrangThai` = '$trangthai' WHERE `cart`.`IdCart` = '$cartid'";
+    $db->exec($query);
+}
 ?>

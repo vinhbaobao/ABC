@@ -1,4 +1,14 @@
 <?php include 'view/header_admin.php'; ?>
+<?php
+// Chỉ cho phép loại 2 (quản trị viên) thao tác thêm user
+$is_admin = isset($_SESSION['Loai']) && $_SESSION['Loai'] == 2;
+$tb = ["username" => NULL, "password" => NULL, "mail" => NULL, "oke" => NULL];
+$user = $pass = $email = null;
+
+// Xử lý thêm người dùng: GỬI FORM VỀ index.php ĐỂ XỬ LÝ SQL
+// Nếu bạn muốn xử lý thêm user trực tiếp ở đây (không gửi sang index.php), hãy bỏ action="index.php?action=them_user" và thay bằng action="".
+// Nếu muốn gửi về index.php (chuẩn MVC), giữ nguyên action="index.php?action=them_user" và đảm bảo index.php có xử lý POST như hướng dẫn dưới đây.
+?>
 <style>
 /* ======= Giao diện CSS cho trang quản lý phiếu xuất nhập kho ======= */
 .panel {
@@ -85,7 +95,7 @@
 							<tr>
 								<td>
 									<!-- Nút xóa user -->
-									<form method="post" style="margin:0;">
+									<form method="post" action="index.php?action=ql_user&id=0" style="margin:0;">
 										<input type="hidden" name="action" value="del_user">
 										<button type="submit" class="btn btn-link" style="padding:0;"><i class="fa fa-window-close"></i></button>
 										<input type="hidden" name="id" value="<?php echo $user['IdUser']; ?>" />
@@ -95,7 +105,7 @@
 								<td><?php echo htmlspecialchars($user['Email']); ?></td>
 								<td>
 									<?php if ($is_admin && $_SESSION['Username'] != $user['Username']) : ?>
-										<form method="post" style="display:inline;">
+										<form method="post" action="index.php?action=ql_user&id=0" style="display:inline;">
 											<input type="hidden" name="action" value="update_role">
 											<input type="hidden" name="id" value="<?php echo $user['IdUser']; ?>">
 											<select name="role" class="form-control" style="display:inline;width:auto;height:28px;padding:2px 8px;">
@@ -115,38 +125,40 @@
 				</div>
 			</div>
 		</div>
-		<!-- Form thêm quản trị viên mới -->
+		<!-- Form thêm người dùng (dành cho quản trị viên) -->
 		<div class="col-lg-6 col-md-6 col-sm-12" style="margin-bottom:16px;">
+			<?php if ($is_admin): ?>
 			<div class="panel panel-default">
 				<div class="panel-heading">
-					<h4 style="font-weight:600;margin:0;">Thêm quản trị viên</h4>
+					<h4 style="font-weight:600;margin:0;">Thêm người dùng</h4>
 				</div>
 				<div class="panel-body">
-					<form class="form-group" method="post" style="margin-bottom:0;">
+					<form class="form-group" method="post" action="index.php?action=them_user" style="margin-bottom:0;">
 						<input type="hidden" name="action" value="them_user">
 						<div class="form-group">
-							<label for="user">Nhập tên</label>
-							<input type="text" class="form-control" name="user" placeholder="Nhập tên">
+							<label for="user">Tên đăng nhập</label>
+							<input type="text" class="form-control" name="user" placeholder="Nhập tên đăng nhập" required>
 						</div>
 						<div class="form-group">
 							<label for="pass">Mật khẩu</label>
-							<input type="password" class="form-control" name="pass" placeholder="Nhập mật khẩu">
+							<input type="password" class="form-control" name="pass" placeholder="Nhập mật khẩu" required>
 						</div>
 						<div class="form-group">
 							<label for="email">Email</label>
-							<input type="email" class="form-control" name="email" placeholder="Email">
+							<input type="email" class="form-control" name="email" placeholder="Email" required>
 						</div>
 						<div class="form-group">
 							<label for="loai">Chức vụ</label>
-							<select class="form-control" name="loai">
+							<select class="form-control" name="loai" required>
 								<option value="1">Nhân viên</option>
 								<option value="2">Quản trị viên</option>
 							</select>
 						</div>
-						<button type="submit" class="btn btn-primary">Thêm</button>
+						<button type="submit" class="btn btn-primary">Thêm người dùng</button>
 					</form>
 				</div>
 			</div>
+			<?php endif; ?>
 		</div>
 	</div>
 </div>
