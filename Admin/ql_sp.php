@@ -1,5 +1,5 @@
 <style>
-/* ======= PHẦN: Style giao diện quản lý sản phẩm ======= */
+/* ======= Giao diện CSS cho trang quản lý phiếu xuất nhập kho ======= */
 .panel {
     border-radius: 12px !important;
     box-shadow: 0 2px 8px rgba(40,62,81,0.07);
@@ -56,27 +56,25 @@
 </style>
 
 <?php
+// ======= PHẦN: HEADER & KẾT NỐI DB =======
 include 'view/header_admin.php';
 
-/* ======= PHẦN: Xử lý dữ liệu đầu vào và truy vấn ======= */
-// Lấy danh sách nhóm sản phẩm
+// ======= PHẦN: LẤY DỮ LIỆU NHÓM SẢN PHẨM & KHO =======
 $categories = [];
 $stmt = $db->query("SELECT * FROM nhomsp");
 foreach ($stmt as $row) {
     $categories[] = $row;
 }
 
-// Lấy danh sách kho
 $ds_kho = [];
 $stmt_kho = $db->query("SELECT IdKho, TenKho FROM kho");
 foreach ($stmt_kho as $row_kho) {
     $ds_kho[$row_kho['IdKho']] = $row_kho['TenKho'];
 }
 
-// Lấy danh sách sản phẩm theo kho nếu có tham số kho_id
+// ======= PHẦN: LẤY DANH SÁCH SẢN PHẨM THEO KHO (NẾU CÓ) =======
 if (isset($_GET['kho_id']) && is_numeric($_GET['kho_id'])) {
     $kho_id = (int)$_GET['kho_id'];
-    // Lấy sản phẩm theo kho từ database (sửa IdKho -> id_kho)
     $stmt = $db->prepare("SELECT sp.*, nsp.TenNhomSP FROM sanpham sp 
                           LEFT JOIN nhomsp nsp ON sp.IdNhomSP = nsp.IdNhomSP 
                           WHERE sp.id_kho = ?");
@@ -84,7 +82,6 @@ if (isset($_GET['kho_id']) && is_numeric($_GET['kho_id'])) {
     $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
     $category_name = isset($ds_kho[$kho_id]) ? 'Kho: ' . htmlspecialchars($ds_kho[$kho_id]) : '';
 } else {
-    // Nếu không có kho_id, lấy tất cả sản phẩm (hoặc logic cũ của bạn)
     if (!isset($products)) {
         $stmt = $db->query("SELECT sp.*, nsp.TenNhomSP FROM sanpham sp 
                             LEFT JOIN nhomsp nsp ON sp.IdNhomSP = nsp.IdNhomSP");
@@ -92,17 +89,16 @@ if (isset($_GET['kho_id']) && is_numeric($_GET['kho_id'])) {
     }
 }
 ?>
-
-<!-- ======= PHẦN: Layout chính, tiêu đề trang ======= -->
+<!-- ======= PHẦN: LAYOUT CHÍNH, TIÊU ĐỀ TRANG ======= -->
 <div class="right-col col-lg-10 col-md-9 col-sm-9 col-xs-12" style="background:#f4f6f9;color:#283e51;min-height:100vh;padding:16px 8px 8px 8px;">
-    <!-- ======= PHẦN: Tiêu đề trang ======= -->
+    <!-- ======= PHẦN: TIÊU ĐỀ TRANG ======= -->
     <div class="tittle" style="margin-bottom:16px;">
         <h3 style="font-weight:600;">Quản lý sản phẩm</h3>
     </div>
     <div class="row">
-        <!-- ======= PHẦN: Cột trái - Nhóm sản phẩm, kho ======= -->
+        <!-- ======= PHẦN: CỘT TRÁI - NHÓM SẢN PHẨM, KHO ======= -->
         <div class="col-lg-6 col-md-6 col-sm-12" style="margin-bottom:16px;">
-            <!-- Danh sách nhóm sản phẩm -->
+            <!-- ======= DANH SÁCH NHÓM SẢN PHẨM ======= -->
             <div class="panel panel-default" style="margin-bottom:16px;">
                 <div class="panel-heading" style="display:flex;align-items:center;justify-content:space-between;">
                     <h4 style="font-weight:600;margin:0;">Danh sách nhóm sản phẩm</h4>
@@ -145,7 +141,7 @@ if (isset($_GET['kho_id']) && is_numeric($_GET['kho_id'])) {
                     </table>
                 </div>
             </div>
-            <!-- Thêm nhóm sản phẩm -->
+            <!-- ======= FORM THÊM NHÓM SẢN PHẨM ======= -->
             <div class="panel panel-default" style="margin-bottom:16px;">
                 <div class="panel-heading">
                     <h4 style="font-weight:600;margin:0;">Thêm nhóm sản phẩm</h4>
@@ -165,7 +161,7 @@ if (isset($_GET['kho_id']) && is_numeric($_GET['kho_id'])) {
                     </form>
                 </div>
             </div>
-            <!-- Thêm kho -->
+            <!-- ======= FORM THÊM KHO (CHỈ ADMIN) ======= -->
             <?php if (isset($_SESSION['Loai']) && $_SESSION['Loai'] == 2): ?>
             <div class="panel panel-default" style="margin-bottom:16px;">
                 <div class="panel-heading">
@@ -188,7 +184,7 @@ if (isset($_GET['kho_id']) && is_numeric($_GET['kho_id'])) {
                 </div>
             </div>
             <?php endif; ?>
-            <!-- Danh sách kho -->
+            <!-- ======= DANH SÁCH KHO ======= -->
             <div class="panel panel-default">
                 <div class="panel-heading" style="display:flex;align-items:center;justify-content:space-between;">
                     <h4 style="font-weight:600;margin:0;">Danh sách kho</h4>
@@ -236,7 +232,7 @@ if (isset($_GET['kho_id']) && is_numeric($_GET['kho_id'])) {
                 </div>
             </div>
         </div>
-        <!-- ======= PHẦN: Cột phải - Thêm sản phẩm ======= -->
+        <!-- ======= PHẦN: CỘT PHẢI - FORM THÊM SẢN PHẨM ======= -->
         <div class="col-lg-6 col-md-6 col-sm-12" style="margin-bottom:16px;">
             <div class="panel panel-default">
                 <div class="panel-heading" style="display:flex;align-items:center;justify-content:space-between;">
@@ -303,7 +299,7 @@ if (isset($_GET['kho_id']) && is_numeric($_GET['kho_id'])) {
             </div>
         </div>
     </div>
-    <!-- ======= PHẦN: Bảng danh sách sản phẩm ======= -->
+    <!-- ======= PHẦN: BẢNG DANH SÁCH SẢN PHẨM ======= -->
     <div class="content col-lg-12 col-md-12 col-sm-12 col-xs-12">
         <div class="panel panel-default">
             <div class="panel-heading">
@@ -325,6 +321,7 @@ if (isset($_GET['kho_id']) && is_numeric($_GET['kho_id'])) {
                     </thead>
                     <tbody>
                     <?php
+                    // ======= PHẦN: HIỂN THỊ DANH SÁCH SẢN PHẨM =======
                     $ds_kho = [];
                     $stmt_kho = $db->query("SELECT IdKho, TenKho FROM kho");
                     foreach ($stmt_kho as $row_kho) {
@@ -333,6 +330,7 @@ if (isset($_GET['kho_id']) && is_numeric($_GET['kho_id'])) {
                     foreach ($products as $product) : ?>
                     <tr>
                         <td>
+                            <!-- Xóa sản phẩm -->
                             <form method="post" class="delete-sp-form" action="" style="margin:0;">
                                 <input type="hidden" name="action" value="del_sp">
                                 <input type="hidden" name="id_sanpham" value="<?php echo $product['IdSP']; ?>">
@@ -347,8 +345,26 @@ if (isset($_GET['kho_id']) && is_numeric($_GET['kho_id'])) {
                         </td>
                         <td style="text-align:center; vertical-align:middle;"><?php echo $product['TenSP']; ?></td>
                         <td><img style="width:100px;" src="../images<?php echo $product['Hinh']; ?>"></td>
-                        <td><?php echo date('d/m/Y', strtotime($product['HanSD'])); ?></td>
-                        <td><?php echo date('d/m/Y', strtotime($product['HetHan'])); ?></td>
+                        <td>
+                            <?php
+                            // ======= HIỂN THỊ HẠN SỬ DỤNG (NULL/0000-00-00 thì để trống) =======
+                            if (empty($product['HanSD']) || $product['HanSD'] == '1970-01-01' || $product['HanSD'] == null) {
+                                echo '';
+                            } else {
+                                echo date('d/m/Y', strtotime($product['HanSD']));
+                            }
+                            ?>
+                        </td>
+                        <td>
+                            <?php
+                            // ======= HIỂN THỊ HẾT HẠN (NULL/0000-00-00 thì để trống) =======
+                            if (empty($product['HetHan']) || $product['HetHan'] == '1970-01-01' || $product['HetHan'] == null) {
+                                echo '';
+                            } else {
+                                echo date('d/m/Y', strtotime($product['HetHan']));
+                            }
+                            ?>
+                        </td>
                         <td><?php echo (int)$product['SoLuong']; ?></td>
                         <td>
                             <a href="?action=edit_sp&product_id=<?php echo $product['IdSP']; ?>"><i class="fa fa-pencil-square-o"></i></a>
@@ -361,10 +377,7 @@ if (isset($_GET['kho_id']) && is_numeric($_GET['kho_id'])) {
         </div>
     </div>
 </div>
-</content>
-</body>
-</html>
-<!-- ======= PHẦN: Script xử lý AJAX, UI ======= -->
+<!-- ======= PHẦN: SCRIPT XỬ LÝ AJAX, UI, VALIDATE FORM ======= -->
 <!-- textnote: Script xử lý AJAX xóa và thu/phóng -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
